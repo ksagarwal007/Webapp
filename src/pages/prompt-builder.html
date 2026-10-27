@@ -1,0 +1,42 @@
+<!--slug:prompt-builder-->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}</head><body>
+{{HEADER}}
+<main><h1>Prompt template builder</h1><p class="lead">Write reusable prompts with variables, save them, and share them as a link. Everything stays in your browser.</p>
+<div class="card"><div class="g"><div><label>Ready-made templates</label><select id="plib"></select></div><div><label>My saved templates</label><select id="psv"></select></div><div><label>Template name</label><input id="pn" placeholder="e.g. Weekly report"></div></div>
+<button class="b" onclick="psv_()">Save</button><button class="b s" onclick="pdl()">Delete</button><button class="b s" onclick="psh()">Copy share link</button><button class="b s" onclick="pex()">Export all</button><label class="b s" style="display:inline-block;cursor:pointer;margin:12px 8px 0 0;color:#fff">Import<input type="file" id="pim" accept=".json" hidden></label><p class="note" id="pmsg"></p>
+<label>Template (write {{variables}} where the details go)</label><textarea id="pt">Act as a {{role}}. Summarize the following for {{audience}} in {{length}} words:
+
+{{text}}</textarea><div class="g" id="pv"></div><label>Final prompt</label><textarea id="po" readonly></textarea><button class="b" onclick="cp()">Copy prompt</button></div>
+<div class="about"><h2>What it is for</h2><p>When you send the same kind of prompt again and again, a template keeps the wording consistent and stops details being forgotten. Write the template once with {{variables}}, fill in the boxes each time and copy the finished prompt.</p><h2>Example</h2><p>A support team saves one template for replying to customers, with boxes for tone, policy and the customer message, then fills in three boxes for each new ticket.</p><h2>Questions</h2><details class="q"><summary>Where are my saved templates stored?</summary><p>In your browser on this device only. Use Export all to back them up or move them to another device.</p></details><details class="q"><summary>How do share links work?</summary><p>The template is encoded inside the link itself, so nothing is stored on a server. Anyone with the link can read it, so keep secrets out of templates. Long templates make long links.</p></details><details class="q"><summary>Is anything uploaded?</summary><p>No. Everything runs in your browser.</p></details></div></main>
+{{RELATED}}
+{{FOOTER}}
+<script>
+const $=s=>document.getElementById(s);
+const LIB=[['Writing','Rewrite for tone','Rewrite the text below in a {{tone}} tone for {{audience}}. Keep the meaning and keep it under {{length}} words.\n\n{{text}}'],['Writing','Reply to an email','Write a reply to the email below. My goal: {{goal}}. Tone: {{tone}}. Keep it short.\n\nEmail:\n{{email}}'],['Work','Meeting notes to actions','From the meeting notes below, list the decisions made, the action items (owner and deadline) and the open questions.\n\nNotes:\n{{notes}}'],['Work','Customer support reply','You are a support agent for {{company}}. Reply to this customer in a {{tone}} tone, using only this policy: {{policy}}\n\nCustomer message:\n{{message}}'],['Code','Code review','Review this {{language}} code for bugs, security issues and readability. List problems by severity and suggest fixes.\n\n{{code}}'],['Code','Explain an error','I get this error in {{stack}}:\n{{error}}\n\nRelevant code:\n{{code}}\n\nExplain the cause and give the smallest fix.'],['Learning','Study quiz','Create {{count}} quiz questions on {{topic}} for a {{level}} learner, with answers and a one-line explanation each.'],['Business','Product description','Write a product description for {{product}} aimed at {{audience}}. Highlight: {{features}}. Maximum {{length}} words.'],['Research','Summarize a document','Summarize the document below for {{audience}} in {{length}} bullet points, then list 3 questions it leaves unanswered.\n\n{{text}}']];
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function lsg(){try{return JSON.parse(localStorage.getItem('ph_t')||'[]')}catch(e){return[]}}
+function lss(a){try{localStorage.setItem('ph_t',JSON.stringify(a))}catch(e){pm('Browser storage is unavailable here. Use Export to keep your templates.')}}
+function pm(s){$('pmsg').textContent=s}
+function plr(){$('plib').innerHTML='<option value="">Choose a ready-made template…</option>'+LIB.map((x,i)=>`<option value="${i}">${x[0]}: ${x[1]}</option>`).join('');$('psv').innerHTML='<option value="">Choose a saved template…</option>'+lsg().map((x,i)=>`<option value="${i}">${E(x.n)}</option>`).join('')}
+function pv(){const t=$('pt').value,v=[...new Set([...t.matchAll(/\{\{(\w+)\}\}/g)].map(m=>m[1]))],old={};document.querySelectorAll('#pv textarea').forEach(e=>old[e.name]=e.value);
+$('pv').innerHTML=v.map(k=>`<div><label>${k}</label><textarea name="${k}" style="min-height:60px">${E(old[k]||'')}</textarea></div>`).join('');document.querySelectorAll('#pv textarea').forEach(e=>e.oninput=pf);pf()}
+function pf(){const o={};document.querySelectorAll('#pv textarea').forEach(e=>o[e.name]=e.value);$('po').value=$('pt').value.replace(/\{\{(\w+)\}\}/g,(m,k)=>o[k]||m)}
+function ldt(t){$('pt').value=t;pv()}
+$('pt').oninput=pv;$('plib').onchange=e=>{if(e.target.value!=='')ldt(LIB[e.target.value][2])};
+$('psv').onchange=e=>{if(e.target.value!==''){const x=lsg()[e.target.value];ldt(x.t);$('pn').value=x.n}};
+function psv_(){const n=$('pn').value.trim();if(!n){pm('Give the template a name first.');return}const a=lsg().filter(x=>x.n!=n);a.push({n,t:$('pt').value});lss(a);plr();pm('Saved in this browser.')}
+function pdl(){const n=$('pn').value.trim();lss(lsg().filter(x=>x.n!=n));plr();pm('Deleted.')}
+function cp(){navigator.clipboard&&navigator.clipboard.writeText($('po').value).then(()=>pm('Prompt copied.'))}
+function b64(s){return btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function ub64(s){return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)))}
+function bb(u){return btoa(String.fromCharCode(...u)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function bu(s){return Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))}
+async function pipe(S,u){const t=new S('deflate-raw'),w=t.writable.getWriter();w.write(u);w.close();return new Uint8Array(await new Response(t.readable).arrayBuffer())}
+async function psh(){const j=JSON.stringify({n:$('pn').value.trim(),t:$('pt').value});let h='#t~'+b64(j);
+try{const z='#z~'+bb(await pipe(CompressionStream,new TextEncoder().encode(j)));if(z.length<h.length)h=z}catch(e){}
+const u=location.href.split('#')[0]+h;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>pm('Link copied ('+h.length+' characters after the #). The template is inside the link itself; nothing is stored on a server.'),()=>{$('po').value=u;pm('Copy the link from the Final prompt box.')})}
+function pex(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(lsg(),null,1)],{type:'application/json'}));a.download='my-templates.json';a.click()}
+$('pim').onchange=async e=>{try{const a=JSON.parse(await e.target.files[0].text()),m=lsg();a.forEach(x=>{if(x.n&&x.t){const i=m.findIndex(y=>y.n==x.n);i<0?m.push(x):m[i]=x}});lss(m);plr();pm('Imported.')}catch(x){pm('Import failed: not a template file.')}};
+async function lh(){const h=location.hash.slice(1);try{let x;if(h.startsWith('t~'))x=JSON.parse(ub64(h.slice(2)));else if(h.startsWith('z~'))x=JSON.parse(new TextDecoder().decode(await pipe(DecompressionStream,bu(h.slice(2)))));else return;ldt(x.t);$('pn').value=x.n||'';pm('Shared template loaded.')}catch(e){pm('This link could not be opened in this browser.')}}
+plr();pv();lh();addEventListener('hashchange',lh);
+</script></body></html>

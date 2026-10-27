@@ -1,0 +1,78 @@
+{
+ "site": {
+  "name": "LLM Hub",
+  "tagline": "Free, private tools for working with AI: forecast costs, compare model prices, count tokens and clean documents.",
+  "email": "CHANGE-ME@example.com"
+ },
+ "groups": [
+  "Costs and models",
+  "Documents and text",
+  "Chats and prompts",
+  "Developer"
+ ],
+ "tools": [
+  {
+   "slug": "cost-forecaster",
+   "name": "Cost Forecaster",
+   "group": 0,
+   "href": "cost-forecaster.html",
+   "desc": "Forecast monthly LLM costs for chatbots, agents and batch jobs."
+  },
+  {
+   "slug": "model-prices",
+   "name": "Model prices",
+   "group": 0,
+   "href": "model-prices.html",
+   "desc": "Compare prices and context windows across providers."
+  },
+  {
+   "slug": "token-counter",
+   "name": "Token counter",
+   "group": 0,
+   "href": "token-counter.html",
+   "desc": "Count tokens and rank every model by cost for your text."
+  },
+  {
+   "slug": "pdf-to-text",
+   "name": "PDF & web to text",
+   "group": 1,
+   "href": "pdf-to-text.html",
+   "desc": "Turn PDFs and web pages into clean, LLM-ready text."
+  },
+  {
+   "slug": "text-cleaner",
+   "name": "AI text cleaner",
+   "group": 1,
+   "href": "text-cleaner.html",
+   "desc": "Strip Markdown, invisible characters and em dashes."
+  },
+  {
+   "slug": "chunker",
+   "name": "Chunker",
+   "group": 1,
+   "href": "chunker.html",
+   "desc": "Split long documents into overlapping, token-sized chunks."
+  },
+  {
+   "slug": "chat-export",
+   "name": "Chat export",
+   "group": 2,
+   "href": "chat-export.html",
+   "desc": "Convert ChatGPT and Claude chats to Markdown, Word or PDF."
+  },
+  {
+   "slug": "prompt-builder",
+   "name": "Prompt builder",
+   "group": 2,
+   "href": "prompt-builder.html",
+   "desc": "Reusable prompt templates with variables, saving and share links."
+  },
+  {
+   "slug": "json-validator",
+   "name": "JSON validator",
+   "group": 3,
+   "href": "json-validator.html",
+   "desc": "Validate model output against a simple schema."
+  }
+ ]
+}

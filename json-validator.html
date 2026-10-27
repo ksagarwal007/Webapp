@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>JSON validator | LLM Hub</title><meta name="description" content="Validate model output against a simple schema."><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:#05070d}
+.sh{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,7,13,.94);backdrop-filter:blur(8px);border-bottom:1px solid #1b2a4a;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.sh-in{max-width:1000px;margin:auto;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sh a,.sh summary{color:#e6edf9;text-decoration:none}.sh-logo{font-weight:700;margin-right:auto}.sh-logo b{background:#3b82f6;border-radius:6px;padding:1px 7px;margin-right:6px}
+.sh-nav{display:flex;align-items:center;gap:18px}.sh-nav>a:hover,.sh-dd summary:hover{color:#60a5fa}
+.sh-dd{position:relative}.sh-dd summary{cursor:pointer;list-style:none}.sh-dd summary::-webkit-details-marker{display:none}.sh-dd summary::after{content:" \25BE";font-size:11px}
+.sh-menu{position:absolute;right:0;top:140%;width:min(560px,92vw);max-height:70vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;background:#0b1220;border:1px solid #1b2a4a;border-radius:12px;padding:14px}
+.sh-g i{display:block;font-style:normal;color:#60a5fa;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.sh-g a{display:block;padding:4px 0;font-size:14px}
+.ft{border-top:1px solid #1b2a4a;margin-top:40px;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));color:#8a9bbd;font:13px/1.7 system-ui,sans-serif}.ft-in{max-width:1000px;margin:auto}.ft a{color:#8a9bbd;margin-right:14px;display:inline-block;text-decoration:none}.ft a:hover{color:#60a5fa}
+.rel{max-width:1000px;margin:30px auto 0;padding:0 20px;font-family:system-ui,sans-serif;color:#e6edf9}.rel h3{margin:0 0 10px}
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tc{display:block;background:#0b1220;border:1px solid #1b2a4a;border-radius:12px;padding:14px;text-decoration:none;color:#e6edf9}.tc:hover{border-color:#3b82f6}.tc b{display:block}.tc span{color:#8a9bbd;font-size:13px}
+@media(max-width:700px){.sh-dd{position:static}.sh-menu{left:0;right:0;top:100%;width:auto;border-radius:0 0 12px 12px;border-width:0 0 1px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));padding:14px 20px}}
+.ft-r{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-bottom:8px}.ft-r b{color:#e6edf9;margin-right:auto}.ft-r a{margin:0}.ft p{margin:0}.ft-n{display:flex;flex-wrap:wrap;gap:4px 18px;justify-content:space-between}
+</style><style>:root{--bg:#05070d;--sf:#0b1220;--bd:#1b2a4a;--tx:#e6edf9;--mu:#8a9bbd;--ac:#3b82f6;--ac2:#60a5fa;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:auto;padding:0 20px}h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:14px 0}
+label{display:block;color:var(--mu);font-size:13px;margin:12px 0 4px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:9px;font:inherit}
+textarea{min-height:150px;font:13px ui-monospace,Menlo,Consolas,monospace}input[type=checkbox]{width:auto}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.b{font:inherit;cursor:pointer;border:0;border-radius:8px;background:var(--ac);color:#fff;padding:9px 14px;margin:12px 8px 0 0}.b.s{background:var(--bd)}
+.st{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.st div{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;color:var(--mu);font-size:13px}.st b{display:block;font-size:20px;color:var(--ac2)}
+.ov{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:520px}th,td{padding:7px;border-bottom:1px solid var(--bd);text-align:left}th{color:var(--mu);font-weight:500}th[data-k]{cursor:pointer}
+.note{color:var(--mu);font-size:12px;margin-top:10px}.ok{color:#4ade80}.er{color:#f87171}
+.about h2{font-size:20px;margin:30px 0 6px;color:var(--ac2)}.about p,.about li{color:#b6c3dc}
+details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{color:#b6c3dc;margin:8px 0 0}
+</style></head><body>
+<div class="sh" role="banner"><div class="sh-in"><a class="sh-logo" href="index.html"><b>&#9638;</b>LLM Hub</a><div class="sh-nav" role="navigation"><details class="sh-dd"><summary>Tools</summary><div class="sh-menu"><div class="sh-g"><i>Costs and models</i><a href="cost-forecaster.html">Cost Forecaster</a><a href="model-prices.html">Model prices</a><a href="token-counter.html">Token counter</a></div><div class="sh-g"><i>Documents and text</i><a href="pdf-to-text.html">PDF &amp; web to text</a><a href="text-cleaner.html">AI text cleaner</a><a href="chunker.html">Chunker</a></div><div class="sh-g"><i>Chats and prompts</i><a href="chat-export.html">Chat export</a><a href="prompt-builder.html">Prompt builder</a></div><div class="sh-g"><i>Developer</i><a href="json-validator.html">JSON validator</a></div></div></details><a href="model-prices.html">Model prices</a><a href="how-it-works.html">How it works</a></div></div></div>
+<main><h1>JSON &amp; schema validator</h1><p class="lead">Validate model output, find the exact error, and fix common problems.</p>
+<div class="card"><div class="g" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))"><div><label>JSON (paste model output here)</label><textarea id="ji" style="min-height:220px">{"name":"Ada","age":36}</textarea></div><div><label>Schema (optional)</label><textarea id="jsc" style="min-height:220px">{"type":"object","required":["name","age"],"properties":{"name":{"type":"string"},"age":{"type":"number","minimum":0}}}</textarea></div></div>
+<button class="b" onclick="vj()">Validate</button><button class="b s" onclick="pj(2)">Prettify</button><button class="b s" onclick="pj(0)">Minify</button><button class="b s" onclick="sk()">Sort keys</button><button class="b s" onclick="repair()">Fix common issues</button>
+<pre id="jo" style="white-space:pre-wrap;margin:14px 0 0;font:13px ui-monospace,Menlo,Consolas,monospace"></pre>
+<p class="note">Schema checks cover type, required, properties, items, enum, minimum, maximum and minLength. It is a quick check, not a full JSON Schema validator.</p></div>
+<div class="about"><h2>What it is for</h2><p>When a model is asked for structured output, the result sometimes arrives wrapped in a code block, with an extra sentence around it, or with a trailing comma. This tool finds the exact line and column of a syntax error, checks the structure against a schema, and fixes the most common problems.</p><h2>Questions</h2><details class="q"><summary>Is my data uploaded?</summary><p>No. Validation happens in your browser.</p></details><details class="q"><summary>What does Fix common issues do?</summary><p>It removes Markdown code fences, trims text before and after the JSON, and removes trailing commas. It does not guess at anything else, so check the result before using it.</p></details><details class="q"><summary>Is this a full JSON Schema validator?</summary><p>No. It covers the most common checks (type, required fields, nested properties, array items, allowed values, simple number and string limits) and is meant for quick checks.</p></details></div></main>
+<div class="rel"><h3>Related tools</h3><div class="tg"><a class="tc" href="cost-forecaster.html"><b>Cost Forecaster</b><span>Forecast monthly LLM costs for chatbots, agents and batch jobs.</span></a><a class="tc" href="model-prices.html"><b>Model prices</b><span>Compare prices and context windows across providers.</span></a><a class="tc" href="token-counter.html"><b>Token counter</b><span>Count tokens and rank every model by cost for your text.</span></a></div></div>
+<div class="ft"><div class="ft-in"><div class="ft-r"><b>LLM Hub</b><a href="index.html#tools">All tools</a><a href="how-it-works.html">How it works</a><a href="mailto:CHANGE-ME@example.com">Feedback</a></div><div class="ft-n"><p>Prices from the open-source LiteLLM catalog, not verified against provider billing. Nothing you paste or upload leaves your browser.</p><p>&copy; 2026 LLM Hub</p></div></div></div>
+<script>
+const $=s=>document.getElementById(s);
+function jerr(s){let i=0;const fail=m=>{throw{p:i,m}},ws=()=>{while(/\s/.test(s[i]||''))i++};
+function str(){i++;while(i<s.length&&s[i]!='"'){if(s[i]=='\\')i++;else if(s[i]=='\n')fail('Unterminated string');i++}if(i>=s.length)fail('Unterminated string');i++}
+function val(){ws();const c=s[i];
+if(c=='{'){i++;ws();if(s[i]=='}'){i++;return}for(;;){ws();if(s[i]!='"')fail('Expected a property name in double quotes');str();ws();if(s[i]!=':')fail('Expected ":"');i++;val();ws();if(s[i]==','){i++;continue}if(s[i]=='}'){i++;return}fail('Expected "," or "}"')}}
+if(c=='['){i++;ws();if(s[i]==']'){i++;return}for(;;){val();ws();if(s[i]==','){i++;continue}if(s[i]==']'){i++;return}fail('Expected "," or "]"')}}
+if(c=='"')return str();
+const m=/^(-?\d+(\.\d+)?([eE][+-]?\d+)?|true|false|null)/.exec(s.slice(i));if(!m)fail(i>=s.length?'Unexpected end of input':'Unexpected character "'+c+'"');i+=m[0].length}
+try{val();ws();if(i<s.length)fail('Unexpected text after the JSON')}catch(e){return e&&e.m?e:null}return null}
+function perr(s,e){const r=jerr(s);if(!r)return e.message;const pre=s.slice(0,r.p).split('\n'),line=pre.length,col=pre[pre.length-1].length+1,txt=s.split('\n')[line-1]||'';return r.m+' (line '+line+', column '+col+')\n'+txt.slice(0,160)+'\n'+' '.repeat(Math.min(col-1,160))+'^'}
+function chk(v,s,p,e){if(!s)return;const ty=Array.isArray(v)?'array':v===null?'null':typeof v,at=p||'root';
+if(s.type&&(s.type=='integer'?!Number.isInteger(v):s.type!=ty))e.push(at+': expected '+s.type+', got '+ty);
+if(s.enum&&!s.enum.includes(v))e.push(at+': not one of the allowed values');
+if(ty=='number'){if(s.minimum!=null&&v<s.minimum)e.push(at+': below minimum '+s.minimum);if(s.maximum!=null&&v>s.maximum)e.push(at+': above maximum '+s.maximum)}
+if(ty=='string'&&s.minLength&&v.length<s.minLength)e.push(at+': shorter than '+s.minLength+' characters');
+if(ty=='object'){(s.required||[]).forEach(k=>{if(!(k in v))e.push(at+': missing "'+k+'"')});for(const k in s.properties||{})if(k in v)chk(v[k],s.properties[k],p+'.'+k,e)}
+if(ty=='array'&&s.items)v.forEach((x,i)=>chk(x,s.items,p+'['+i+']',e))}
+function say(t,ok){$('jo').style.color=ok?'#4ade80':'#f87171';$('jo').textContent=t}
+function vj(pre){pre=typeof pre=='string'?pre:'';const src=$('ji').value;let v;try{v=JSON.parse(src)}catch(x){say(pre+'Invalid JSON: '+perr(src,x),false);return}
+const sc=$('jsc').value.trim();if(!sc){say(pre+'Valid JSON.',true);return}
+let s;try{s=JSON.parse(sc)}catch(x){say(pre+'The schema is not valid JSON: '+x.message,false);return}
+const e=[];chk(v,s,'',e);say(pre+(e.length?e.join('\n'):'Valid JSON, matches the schema.'),!e.length)}
+function pj(n){try{$('ji').value=JSON.stringify(JSON.parse($('ji').value),null,n);$('jo').textContent=''}catch(x){say('Invalid JSON: '+perr($('ji').value,x),false)}}
+function ks(v){return Array.isArray(v)?v.map(ks):v&&typeof v=='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,ks(v[k])])):v}
+function sk(){try{$('ji').value=JSON.stringify(ks(JSON.parse($('ji').value)),null,2);$('jo').textContent=''}catch(x){say('Invalid JSON: '+perr($('ji').value,x),false)}}
+function repair(){let s=$('ji').value;const log=[],a=s;s=s.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');if(s!=a)log.push('removed code fences');
+const i=s.search(/[\[{]/),j=Math.max(s.lastIndexOf('}'),s.lastIndexOf(']'));if(i>=0&&j>i&&(i>0||j<s.length-1)){s=s.slice(i,j+1);log.push('trimmed text around the JSON')}
+const c=s;s=s.replace(/,(\s*[}\]])/g,'$1');if(s!=c)log.push('removed trailing commas');
+$('ji').value=s;vj(log.length?'Applied: '+log.join(', ')+'. Check the result.\n':'Nothing to fix automatically.\n')}
+</script></body></html>

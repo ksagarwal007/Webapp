@@ -1,0 +1,29 @@
+<!--slug:text-cleaner-->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}</head><body>
+{{HEADER}}
+<main><h1>AI text cleaner</h1><p class="lead">Strip Markdown, invisible characters and em dashes from AI-generated text.</p>
+<div class="card"><label>Paste AI-generated text</label><textarea id="ci" placeholder="Paste text from ChatGPT, Claude or any AI tool…"></textarea>
+<div class="g" style="margin-top:6px">
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="o_md" checked> Strip Markdown (headings, bold, italics, code, links)</label>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="o_inv" checked> Remove invisible characters</label>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="o_em" checked> Replace em dashes (and spaced en dashes) with</label>
+<div><select id="dm"><option value=", ">a comma</option><option value=" - ">a spaced hyphen</option><option value=" ">a space</option></select></div>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="o_q" checked> Straighten smart quotes</label>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="o_sp" checked> Collapse extra spaces and blank lines</label></div>
+<button class="b" onclick="cp()">Copy result</button><p class="note" id="cn"></p><label>Result</label><textarea id="cx" readonly></textarea></div>
+<div class="about"><h2>What it is for</h2><p>Text copied from AI tools often carries Markdown symbols, invisible characters and heavy use of em dashes that look odd when pasted into email, documents or forms. This tool cleans it up in one step and tells you what it changed.</p><h2>Questions</h2><details class="q"><summary>Is my text uploaded?</summary><p>No. Cleaning happens in your browser.</p></details><details class="q"><summary>Will it break names like my_variable_name?</summary><p>No. Underscores are only treated as italics when they wrap a whole word or phrase, so snake_case names are left alone.</p></details><details class="q"><summary>Does it change ranges like 2010–2020?</summary><p>No. En dashes are only replaced when they have spaces on both sides.</p></details><details class="q"><summary>What are invisible characters?</summary><p>Zero-width spaces, soft hyphens and similar marks that some tools insert. They are invisible but can break searches, links and word counts.</p></details></div></main>
+{{RELATED}}
+{{FOOTER}}
+<script>
+const $=s=>document.getElementById(s);
+function clean(){let t=$('ci').value;const n0=t.length,on=k=>$('o_'+k).checked,log=[];
+const cnt=(re)=>(t.match(re)||[]).length;
+if(on('inv')){const n=cnt(/[\u200B-\u200D\uFEFF\u2060\u00AD\u202A-\u202E]/g);if(n)log.push(n+' invisible character'+(n>1?'s':''));t=t.replace(/[\u200B-\u200D\uFEFF\u2060\u00AD\u202A-\u202E]/g,'').replace(/\u00A0/g,' ')}
+if(on('md')){const b=t;t=t.replace(/```[a-z0-9]*\n?/gi,'').replace(/^#{1,6}\s+/gm,'').replace(/^\s*[-*+]\s+/gm,'- ').replace(/\*\*([^*\n]+)\*\*/g,'$1').replace(/(^|[\s(])__([^_\n]+)__(?=[\s).,;:!?]|$)/g,'$1$2').replace(/\*([^*\n]+)\*/g,'$1').replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:!?]|$)/g,'$1$2').replace(/`([^`\n]+)`/g,'$1').replace(/\[([^\]\n]+)\]\([^)\n]+\)/g,'$1').replace(/^>\s?/gm,'').replace(/^\s*(-{3,}|\*{3,})\s*$/gm,'');if(t!=b)log.push('Markdown formatting')}
+if(on('em')){const r=$('dm').value,n=cnt(/\s*\u2014\s*/g)+cnt(/\s+\u2013\s+/g);if(n)log.push(n+' dash'+(n>1?'es':''));t=t.replace(/\s*\u2014\s*/g,r).replace(/\s+\u2013\s+/g,r)}
+if(on('q')){const n=cnt(/[\u2018\u2019\u201C\u201D]/g);if(n)log.push(n+' smart quote'+(n>1?'s':''));t=t.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"')}
+if(on('sp'))t=t.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+$('cx').value=t;$('cn').textContent=t||n0?`${n0} → ${t.length} characters`+(log.length?' · changed: '+log.join(', '):' · nothing to change'):''}
+function cp(){navigator.clipboard&&navigator.clipboard.writeText($('cx').value).then(()=>{$('cn').textContent='Copied.'})}
+['ci','dm'].forEach(i=>$(i).oninput=clean);document.querySelectorAll('input[type=checkbox]').forEach(e=>e.onchange=clean);
+</script></body></html>

@@ -1,0 +1,24 @@
+<!--slug:chunker-->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}</head><body>
+{{HEADER}}
+<main><h1>Text chunker for LLMs</h1><p class="lead">Split long documents into overlapping, token-sized chunks for search and retrieval.</p>
+<div class="card"><label>Long text to split (a document, transcript or knowledge-base article)</label><textarea id="ki" placeholder="Paste the text you want to split into chunks…" style="min-height:200px"></textarea>
+<div class="g"><div><label>Chunk size (tokens)</label><input id="ks" type="number" value="500" min="20"></div><div><label>Overlap (tokens)</label><input id="kv" type="number" value="50" min="0"></div></div>
+<button class="b" onclick="ck()">Split into chunks</button><button class="b s" onclick="cj()">Copy JSON</button><button class="b s" onclick="dj()">Download JSON</button>
+<p class="note" id="kn">Token counts are estimates (about 4 characters per token). Splits happen at paragraph and sentence boundaries.</p><div id="kl"></div></div>
+<div class="about"><h2>What it is for</h2><p>Models can only read so much at once, and document-search systems (often called RAG) work by splitting documents into chunks, finding the few chunks relevant to a question, and sending only those. This tool does the splitting step, with a token budget per chunk and an optional overlap.</p><h2>Example</h2><p>A 100,000-token manual and 20 questions: sending the whole manual each time costs 2,000,000 input tokens, while sending the three most relevant 500-token chunks per question costs 30,000. The chunking itself costs nothing; the saving comes from sending less.</p><h2>Why overlap?</h2><p>An idea often straddles a boundary. With a 50-token overlap, the end of each chunk is repeated at the start of the next, so a sentence cut at the boundary still appears whole in at least one chunk.</p><h2>Questions</h2><details class="q"><summary>Is my text uploaded?</summary><p>No. Splitting happens in your browser.</p></details><details class="q"><summary>How big should chunks be?</summary><p>A common starting point is 300 to 800 tokens with 10 to 15 percent overlap. Smaller chunks give more precise matches, larger chunks keep more context.</p></details><details class="q"><summary>Are the token counts exact?</summary><p>No, they are estimates of about 4 characters per token. Use the Token counter for exact OpenAI counts.</p></details></div></main>
+{{RELATED}}
+{{FOOTER}}
+<script>
+const $=s=>document.getElementById(s);let OUT=[];
+const est=t=>t.trim()?Math.ceil((t.length/4+t.trim().split(/\s+/).length/.75)/2):0;
+function units(t,max){const o=[];for(const para of t.split(/\n{2,}/)){const p=para.trim();if(!p)continue;if(p.length<=max){o.push(p);continue}
+for(const s of (p.match(/[^.!?]+[.!?]*\s*/g)||[p])){const x=s.trim();if(!x)continue;if(x.length<=max){o.push(x);continue}for(let i=0;i<x.length;i+=max)o.push(x.slice(i,i+max))}}return o}
+function pack(us,max,ov){const ch=[];let cur='';for(const u of us){if(cur&&cur.length+2+u.length>max){ch.push(cur);const o=Math.max(0,Math.min(ov,max-u.length-2)),tail=o?cur.slice(cur.length-o):'',sp=tail.indexOf(' ');cur=(tail?(sp>0?tail.slice(sp+1):tail)+'\n\n':'')+u}else cur=cur?cur+'\n\n'+u:u}if(cur)ch.push(cur);return ch}
+function ck(){const t=$('ki').value.trim();if(!t){$('kn').textContent='Paste some text first.';return}
+const sz=Math.max(20,+$('ks').value||500)*4,ov=Math.min(Math.max(0,+$('kv').value||0)*4,sz/2);OUT=pack(units(t,sz),sz,ov).map((c,i)=>({id:i+1,tokens:est(c),text:c}));
+$('kn').textContent=OUT.length+' chunks · about '+OUT.reduce((a,c)=>a+c.tokens,0).toLocaleString()+' tokens in total (overlap included)';
+$('kl').innerHTML=OUT.slice(0,50).map(c=>`<div style="border:1px solid var(--bd);border-radius:10px;padding:10px;margin-top:10px"><div class="note" style="margin:0 0 4px">Chunk ${c.id} · about ${c.tokens} tokens</div><div style="white-space:pre-wrap;font-size:13px;max-height:120px;overflow:auto">${c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div></div>`).join('')+(OUT.length>50?`<p class="note">Showing the first 50 chunks. Copy or download the JSON for all ${OUT.length}.</p>`:'')}
+function cj(){if(OUT.length&&navigator.clipboard)navigator.clipboard.writeText(JSON.stringify(OUT,null,2)).then(()=>{$('kn').textContent='JSON copied.'})}
+function dj(){if(!OUT.length)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(OUT,null,2)],{type:'application/json'}));a.download='chunks.json';a.click()}
+</script></body></html>

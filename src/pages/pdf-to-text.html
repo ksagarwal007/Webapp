@@ -1,0 +1,31 @@
+<!--slug:pdf-to-text-->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script></head><body>
+{{HEADER}}
+<main><h1>PDF &amp; web page to clean text</h1><p class="lead">Extract LLM-ready text from a PDF or a saved web page. Files are read in your browser and never uploaded.</p>
+<div class="card"><label>PDF, saved .html page or .txt file</label><input type="file" id="df" accept=".pdf,.html,.htm,.txt">
+<label>Or paste page HTML (View Source, copy all)</label><textarea id="dh" style="min-height:90px"></textarea>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="rh" checked> Remove repeated headers, footers and page numbers (PDFs)</label>
+<button class="b" onclick="dph()">Extract from pasted HTML</button><button class="b s" onclick="cp()">Copy</button><button class="b s" onclick="dl()">Download .txt</button>
+<div class="st"><div>Characters<b id="sc">0</b></div><div>Est. tokens<b id="se">0</b></div></div>
+<p class="note" id="dn">Scanned PDFs have no text layer and need OCR, which is not included. Fetching a live URL needs a server, so save the page as HTML first.</p>
+<label>Result</label><textarea id="dx" readonly></textarea></div>
+<div class="about"><h2>What it is for</h2><p>Chatbots often cap file size or mangle tables, and copy-pasting from a PDF drags in headers, footers, page numbers and broken lines. This tool extracts just the text, so you can paste only what you need and spend fewer tokens.</p><h2>Questions</h2><details class="q"><summary>Is my file uploaded?</summary><p>No. The PDF is read in your browser and never leaves your device.</p></details><details class="q"><summary>Why does a PDF come out empty?</summary><p>It is probably a scan, which is an image with no text layer. It needs OCR, which this tool does not include.</p></details><details class="q"><summary>What does the header and footer option do?</summary><p>It drops short lines that repeat on at least 40 percent of the pages, such as running titles and page numbers. Turn it off if it removes something you need.</p></details><details class="q"><summary>Can I paste a web page?</summary><p>Yes. Save the page as HTML or use View Source, then paste it. Menus, scripts and footers are stripped and headings are kept.</p></details></div></main>
+{{RELATED}}
+{{FOOTER}}
+<script>
+const $=s=>document.getElementById(s);let PG=null,TXT='',FN='';
+const est=t=>t.trim()?Math.ceil((t.length/4+t.trim().split(/\s+/).length/.75)/2):0;
+function rf(t){return t.replace(/-\n(?=[a-z])/g,'').replace(/([^.!?:\n])\n(?=[a-z(])/g,'$1 ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim()}
+async function pdf(f){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,P=[];
+for(let p=1;p<=d.numPages;p++){const c=await(await d.getPage(p)).getTextContent();let y=null,l='';const L=[];for(const it of c.items){const yy=it.transform[5];if(y!==null&&Math.abs(yy-y)>3){L.push(l);l=''}l+=it.str;y=yy}L.push(l);P.push(L.map(x=>x.trim()).filter(Boolean))}return P}
+function strip(P){if(!$('rh').checked||P.length<4)return P;const c={},k=x=>x.replace(/\d+/g,'#');P.forEach(L=>new Set(L.map(k)).forEach(z=>c[z]=(c[z]||0)+1));return P.map(L=>L.filter(x=>!(c[k(x)]>=P.length*0.4&&x.length<70)&&!/^\d+$/.test(x)))}
+function h2t(h){const d=new DOMParser().parseFromString(h,'text/html');d.querySelectorAll('script,style,noscript,nav,footer,header,aside,form,iframe,svg,[role=navigation]').forEach(e=>e.remove());const r=d.querySelector('article,main,[role=main]')||d.body;
+const w=n=>{if(n.nodeType==3)return n.textContent.replace(/\s+/g,' ');if(n.nodeType!=1)return'';const t=n.tagName.toLowerCase();if(t=='pre')return'\n\n```\n'+n.textContent+'\n```\n\n';const c=[...n.childNodes].map(w).join('');if(/^h[1-6]$/.test(t))return'\n\n'+'#'.repeat(+t[1])+' '+c.trim()+'\n\n';if(t=='li')return'\n- '+c.trim();if(t=='br')return'\n';if(/^(p|div|section|ul|ol|table|tr|blockquote|figure)$/.test(t))return'\n\n'+c+'\n\n';return c};
+return((d.title?'# '+d.title+'\n\n':'')+w(r)).replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()}
+function show(t,n,x){TXT=t;$('dx').value=t;$('sc').textContent=t.length.toLocaleString();$('se').textContent=est(t).toLocaleString();$('dn').textContent=t.trim()?n+(x||''):'No text found. A scanned PDF has no text layer and needs OCR, which this tool does not include.'}
+function draw(){if(!PG)return;const S=strip(PG),rm=PG.flat().length-S.flat().length;show(rf(S.map(L=>L.join('\n')).join('\n\n')),FN,rm?' · removed '+rm+' repeated header, footer or page-number lines':'')}
+$('df').onchange=async e=>{const f=e.target.files[0];if(!f)return;FN=f.name;PG=null;$('dn').textContent='Reading…';try{if(/\.pdf$/i.test(f.name)){if(!window.pdfjsLib)throw Error('PDF engine failed to load');PG=await pdf(f);draw()}else if(/\.html?$/i.test(f.name))show(h2t(await f.text()),f.name);else show(await f.text(),f.name)}catch(x){$('dn').textContent='Error: '+x.message}};
+$('rh').onchange=draw;function dph(){PG=null;show(h2t($('dh').value),'Pasted HTML')}
+function cp(){navigator.clipboard&&navigator.clipboard.writeText(TXT).then(()=>{$('dn').textContent='Copied.'})}
+function dl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([TXT],{type:'text/plain'}));a.download='clean.txt';a.click()}
+</script></body></html>

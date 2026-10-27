@@ -1,0 +1,42 @@
+<!--slug:json-validator-->
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}</head><body>
+{{HEADER}}
+<main><h1>JSON &amp; schema validator</h1><p class="lead">Validate model output, find the exact error, and fix common problems.</p>
+<div class="card"><div class="g" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))"><div><label>JSON (paste model output here)</label><textarea id="ji" style="min-height:220px">{"name":"Ada","age":36}</textarea></div><div><label>Schema (optional)</label><textarea id="jsc" style="min-height:220px">{"type":"object","required":["name","age"],"properties":{"name":{"type":"string"},"age":{"type":"number","minimum":0}}}</textarea></div></div>
+<button class="b" onclick="vj()">Validate</button><button class="b s" onclick="pj(2)">Prettify</button><button class="b s" onclick="pj(0)">Minify</button><button class="b s" onclick="sk()">Sort keys</button><button class="b s" onclick="repair()">Fix common issues</button>
+<pre id="jo" style="white-space:pre-wrap;margin:14px 0 0;font:13px ui-monospace,Menlo,Consolas,monospace"></pre>
+<p class="note">Schema checks cover type, required, properties, items, enum, minimum, maximum and minLength. It is a quick check, not a full JSON Schema validator.</p></div>
+<div class="about"><h2>What it is for</h2><p>When a model is asked for structured output, the result sometimes arrives wrapped in a code block, with an extra sentence around it, or with a trailing comma. This tool finds the exact line and column of a syntax error, checks the structure against a schema, and fixes the most common problems.</p><h2>Questions</h2><details class="q"><summary>Is my data uploaded?</summary><p>No. Validation happens in your browser.</p></details><details class="q"><summary>What does Fix common issues do?</summary><p>It removes Markdown code fences, trims text before and after the JSON, and removes trailing commas. It does not guess at anything else, so check the result before using it.</p></details><details class="q"><summary>Is this a full JSON Schema validator?</summary><p>No. It covers the most common checks (type, required fields, nested properties, array items, allowed values, simple number and string limits) and is meant for quick checks.</p></details></div></main>
+{{RELATED}}
+{{FOOTER}}
+<script>
+const $=s=>document.getElementById(s);
+function jerr(s){let i=0;const fail=m=>{throw{p:i,m}},ws=()=>{while(/\s/.test(s[i]||''))i++};
+function str(){i++;while(i<s.length&&s[i]!='"'){if(s[i]=='\\')i++;else if(s[i]=='\n')fail('Unterminated string');i++}if(i>=s.length)fail('Unterminated string');i++}
+function val(){ws();const c=s[i];
+if(c=='{'){i++;ws();if(s[i]=='}'){i++;return}for(;;){ws();if(s[i]!='"')fail('Expected a property name in double quotes');str();ws();if(s[i]!=':')fail('Expected ":"');i++;val();ws();if(s[i]==','){i++;continue}if(s[i]=='}'){i++;return}fail('Expected "," or "}"')}}
+if(c=='['){i++;ws();if(s[i]==']'){i++;return}for(;;){val();ws();if(s[i]==','){i++;continue}if(s[i]==']'){i++;return}fail('Expected "," or "]"')}}
+if(c=='"')return str();
+const m=/^(-?\d+(\.\d+)?([eE][+-]?\d+)?|true|false|null)/.exec(s.slice(i));if(!m)fail(i>=s.length?'Unexpected end of input':'Unexpected character "'+c+'"');i+=m[0].length}
+try{val();ws();if(i<s.length)fail('Unexpected text after the JSON')}catch(e){return e&&e.m?e:null}return null}
+function perr(s,e){const r=jerr(s);if(!r)return e.message;const pre=s.slice(0,r.p).split('\n'),line=pre.length,col=pre[pre.length-1].length+1,txt=s.split('\n')[line-1]||'';return r.m+' (line '+line+', column '+col+')\n'+txt.slice(0,160)+'\n'+' '.repeat(Math.min(col-1,160))+'^'}
+function chk(v,s,p,e){if(!s)return;const ty=Array.isArray(v)?'array':v===null?'null':typeof v,at=p||'root';
+if(s.type&&(s.type=='integer'?!Number.isInteger(v):s.type!=ty))e.push(at+': expected '+s.type+', got '+ty);
+if(s.enum&&!s.enum.includes(v))e.push(at+': not one of the allowed values');
+if(ty=='number'){if(s.minimum!=null&&v<s.minimum)e.push(at+': below minimum '+s.minimum);if(s.maximum!=null&&v>s.maximum)e.push(at+': above maximum '+s.maximum)}
+if(ty=='string'&&s.minLength&&v.length<s.minLength)e.push(at+': shorter than '+s.minLength+' characters');
+if(ty=='object'){(s.required||[]).forEach(k=>{if(!(k in v))e.push(at+': missing "'+k+'"')});for(const k in s.properties||{})if(k in v)chk(v[k],s.properties[k],p+'.'+k,e)}
+if(ty=='array'&&s.items)v.forEach((x,i)=>chk(x,s.items,p+'['+i+']',e))}
+function say(t,ok){$('jo').style.color=ok?'#4ade80':'#f87171';$('jo').textContent=t}
+function vj(pre){pre=typeof pre=='string'?pre:'';const src=$('ji').value;let v;try{v=JSON.parse(src)}catch(x){say(pre+'Invalid JSON: '+perr(src,x),false);return}
+const sc=$('jsc').value.trim();if(!sc){say(pre+'Valid JSON.',true);return}
+let s;try{s=JSON.parse(sc)}catch(x){say(pre+'The schema is not valid JSON: '+x.message,false);return}
+const e=[];chk(v,s,'',e);say(pre+(e.length?e.join('\n'):'Valid JSON, matches the schema.'),!e.length)}
+function pj(n){try{$('ji').value=JSON.stringify(JSON.parse($('ji').value),null,n);$('jo').textContent=''}catch(x){say('Invalid JSON: '+perr($('ji').value,x),false)}}
+function ks(v){return Array.isArray(v)?v.map(ks):v&&typeof v=='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,ks(v[k])])):v}
+function sk(){try{$('ji').value=JSON.stringify(ks(JSON.parse($('ji').value)),null,2);$('jo').textContent=''}catch(x){say('Invalid JSON: '+perr($('ji').value,x),false)}}
+function repair(){let s=$('ji').value;const log=[],a=s;s=s.replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');if(s!=a)log.push('removed code fences');
+const i=s.search(/[\[{]/),j=Math.max(s.lastIndexOf('}'),s.lastIndexOf(']'));if(i>=0&&j>i&&(i>0||j<s.length-1)){s=s.slice(i,j+1);log.push('trimmed text around the JSON')}
+const c=s;s=s.replace(/,(\s*[}\]])/g,'$1');if(s!=c)log.push('removed trailing commas');
+$('ji').value=s;vj(log.length?'Applied: '+log.join(', ')+'. Check the result.\n':'Nothing to fix automatically.\n')}
+</script></body></html>
