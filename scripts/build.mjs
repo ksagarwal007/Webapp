@@ -11,7 +11,7 @@ const menu = cfg.groups.map((g, i) => `<div class="sh-g"><i>${esc(g)}</i>${T.fil
 const grid = cfg.groups.map((g, i) => `<h3 class="gt">${esc(g)}</h3><div class="tg">${T.filter((t) => t.group == i).map(card).join("")}</div>`).join("");
 const css = `<style>${rd("src/partials/shared.css")}</style>`;
 if (/example\.com$/.test(cfg.site.email || "")) console.warn("WARNING: set site.email in tools.json (the Feedback link still uses a placeholder).");
-const shared = (s) => s.replaceAll("{{EMAIL}}", () => esc(cfg.site.email || "")).replaceAll("{{SITE}}", () => esc(cfg.site.name)).replaceAll("{{MENU}}", () => menu).replaceAll("{{MENU_FLAT}}", () => T.map(link).join("")).replaceAll("{{YEAR}}", () => new Date().getFullYear());
+const shared = (s) => s.replaceAll("{{SITE_JSON}}", () => JSON.stringify(cfg.site.name)).replaceAll("{{SITE_URL_JSON}}", () => JSON.stringify(cfg.site.url || "")).replaceAll("{{EMAIL}}", () => esc(cfg.site.email || "")).replaceAll("{{SITE}}", () => esc(cfg.site.name)).replaceAll("{{MENU}}", () => menu).replaceAll("{{MENU_FLAT}}", () => T.map(link).join("")).replaceAll("{{YEAR}}", () => new Date().getFullYear());
 const header = rd("src/partials/header.html").trim(), footer = rd("src/partials/footer.html").trim();
 
 for (const f of fs.readdirSync("src/pages").filter((f) => f.endsWith(".html"))) {

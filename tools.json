@@ -2,7 +2,8 @@
  "site": {
   "name": "LLM Hub",
   "tagline": "Free, private tools for working with AI: forecast costs, compare model prices, count tokens and clean documents.",
-  "email": "CHANGE-ME@example.com"
+  "email": "CHANGE-ME@example.com",
+  "url": ""
  },
  "groups": [
   "Costs and models",
@@ -30,7 +31,7 @@
    "name": "Token counter",
    "group": 0,
    "href": "token-counter.html",
-   "desc": "Count tokens and rank every model by cost for your text."
+   "desc": "Count tokens and check whether your text fits a model's context window."
   },
   {
    "slug": "pdf-to-text",

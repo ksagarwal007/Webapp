@@ -1,3 +1,3 @@
-# Keep repo helper files out of the public site
-RedirectMatch 404 ^/(scripts|\.github)(/|$)
-RedirectMatch 404 ^/README\.md$
+# Keep repo helper files and page templates out of the public site
+RedirectMatch 404 ^/(scripts|src|\.github)(/|$)
+RedirectMatch 404 ^/(README\.md|tools\.json)$

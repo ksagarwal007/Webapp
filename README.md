@@ -7,6 +7,7 @@
 - The `build-site` workflow runs the build automatically whenever you change `src/`, `tools.json` or the build script, and commits the result. Hostinger then deploys it.
 
 ## Common edits
+- **Image URL:** the shareable forecast image always shows the site name and address. It uses `site.url` from `tools.json` if set (for example `yourdomain.com`), otherwise the address the page is served from.
 - **Set your feedback email:** change `site.email` in `tools.json` (the build prints a warning until you do). It appears as the Feedback link in the footer.
 - **Change the menu, footer or site name:** edit `src/partials/header.html`, `footer.html` or `site.name` in `tools.json`.
 - **Add a tool:** create `src/pages/<name>.html` (start the file with `<!--slug:your-slug-->` and use `{{TITLE}}`, `{{DESC}}`, `{{SHARED_CSS}}`, `{{HEADER}}`, `{{RELATED}}`, `{{FOOTER}}` as in `cost-forecaster.html`), then add one entry to `tools.json`. The menu, grid and related-tools strips update themselves.
