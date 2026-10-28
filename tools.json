@@ -69,6 +69,13 @@
    "desc": "Reusable prompt templates with variables, saving and share links."
   },
   {
+   "slug": "prompt-trimmer",
+   "name": "Prompt trimmer",
+   "group": 2,
+   "href": "prompt-trimmer.html",
+   "desc": "Trim filler from long prompts, review every change, and see the monthly saving."
+  },
+  {
    "slug": "json-validator",
    "name": "JSON validator",
    "group": 3,

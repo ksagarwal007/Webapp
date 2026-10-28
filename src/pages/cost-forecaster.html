@@ -38,7 +38,7 @@ h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}#spv s
 <div class="card" id="tool"><div class="stp"><span><i>1</i>Pick a workload &amp; model</span><span><i>2</i>Describe your usage</span><span><i>3</i>Read your forecast</span></div><p class="mu">New here? Start from an example:</p><div id="ex"></div></div>
 <div class="row"><div id="tabs"></div><button class="b" id="cl">Copy shareable link</button></div>
 <div class="card"><label style="margin-top:0">Model</label><div class="cbx"><input id="mq" autocomplete="off"><div id="ml"></div></div><div id="f"></div></div>
-<div class="card"><h3>Cost forecast</h3><div class="big"><span id="tot">$0</span> <small>/ month</small></div><span class="badge" id="bd"></span><span class="badge w" id="sb"></span><p class="mu" id="sub"></p>
+<div class="card"><h3>Cost forecast</h3><div class="big"><span id="tot">$0</span> <small>/ month</small></div><span class="badge" id="bd"></span><span class="badge w" id="sb"></span><p class="mu" id="sub"></p><p id="s0" style="margin:0 0 8px;color:#4ade80"></p>
 <h4>Cost breakdown</h4><div id="bk"></div>
 <h4>Sensitivity <small>how each input (±20%) moves your monthly cost</small></h4><div id="sn"></div>
 <h4>What if <small>drag to watch the monthly cost respond</small></h4><div id="wi"></div><p id="wr"></p>
@@ -80,6 +80,7 @@ $('wi').innerHTML=w.wi.map(k=>`<div class="sr"><span>${lab(k)}</span><input type
 function calc(){const m=M[mi()],r=cost(P,m),ex=m[0]=='OpenAI'&&window.GPTTokenizer_o200k_base;
 $('tot').textContent=f(r.tot);$('bd').textContent=ex?'exact: OpenAI tokenizer for pasted text':'estimate: token counts are heuristic';$('sb').textContent=VF?'':'sample prices, not real';
 $('sub').textContent=P.C&&r.sv>0?`Prompt caching saves about ${f(r.sv)} / month (${(r.sv/(r.tot+r.sv)*100).toFixed(0)}%). Ignores cache-write surcharges and expiry.`:(m[4]*1000)+' token context window; history is truncated at that size.';
+if(P.S0>0&&P.S0!=P.S){const b0=cost({...P,S:P.S0},m).tot,d=b0-r.tot;$('s0').textContent=(d>=0?'Prompt trimming saves ':'The new prompt costs ')+f(Math.abs(d))+' / month ('+(b0?Math.abs(d/b0*100).toFixed(0):0)+'%) versus the original '+P.S0.toLocaleString()+'-token prompt.'}else $('s0').textContent='';
 const bx=Math.max(r.ci,r.cc,r.co)||1,rows=[['Input'+(P.C?' (uncached)':''),r.ci],...(P.C?[['Input (cached)',r.cc]]:[]),['Output',r.co]];
 $('bk').innerHTML=rows.map(([l,v])=>`<div class="sr"><span>${l}</span><div class="bar"><i style="width:${v/bx*100}%"></i></div><b>${f(v)}</b></div>`).join('');
 const dr=W[P.w].sn.map(k=>{const a=cost({...P,[k]:P[k]*.8},m).tot,b=cost({...P,[k]:P[k]*1.2},m).tot;return{k,lo:Math.min(a,b),hi:Math.max(a,b)}}).sort((a,b)=>(b.hi-b.lo)-(a.hi-a.lo)),mn=Math.min(...dr.map(d=>d.lo)),sp=(Math.max(...dr.map(d=>d.hi))-mn)||1;
@@ -99,7 +100,7 @@ $('ex').onclick=e=>{const x=EX[e.target.dataset.e];if(!x)return;P={w:x[1],mk:P.m
 function b64(s){return btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function ub64(s){return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)))}
 $('cl').onclick=()=>{const u=location.href.split('#')[0]+'#c~'+b64(JSON.stringify(P));(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{$('cl').textContent='Link copied'},()=>{prompt('Copy this link',u)});setTimeout(()=>$('cl').textContent='Copy shareable link',2500)};
-function lh(){const h=location.hash.slice(1);if(h.startsWith('c~')){try{const x=JSON.parse(ub64(h.slice(2)));if(W[x.w]){P={...W[x.w].d,C:0,cf:10,...x};[...W[x.w].f.map(a=>a[0]),'G','C','cf'].forEach(k=>{if(k in P)P[k]=+P[k]||0});P.mk=String(P.mk||'')}}catch(e){}}}
+function lh(){const h=location.hash.slice(1);if(h.startsWith('c~')){try{const x=JSON.parse(ub64(h.slice(2)));if(W[x.w]){P={...W[x.w].d,C:0,cf:10,...x};[...W[x.w].f.map(a=>a[0]),'G','C','cf','S0'].forEach(k=>{if(k in P)P[k]=+P[k]||0});P.mk=String(P.mk||'')}}catch(e){}}}
 const cs=v=>{v=String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
 function csv(){const m=M[mi()],r=cost(P,m),R=[['Workload',W[P.w].n],['Model',m[0]+' '+m[1]],['Input USD per 1M',m[2]],['Output USD per 1M',m[3]],...W[P.w].f.map(([k,l])=>[l,P[k]]),['Prompt caching',P.C?'on':'off'],['Monthly total USD',r.tot.toFixed(2)],['Input cost USD',(r.ci+r.cc).toFixed(2)],['Output cost USD',r.co.toFixed(2)],['Pricing data',VF||'sample, not verified']];
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([R.map(x=>x.map(cs).join(',')).join('\n')],{type:'text/csv'}));a.download='forecast.csv';a.click()}
