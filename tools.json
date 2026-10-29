@@ -6,9 +6,9 @@
   "url": ""
  },
  "groups": [
-  "Costs and models",
-  "Documents and text",
-  "Chats and prompts",
+  "Costs and Models",
+  "Documents and Text",
+  "Chats and Prompts",
   "Developer"
  ],
  "tools": [
@@ -21,63 +21,64 @@
   },
   {
    "slug": "model-prices",
-   "name": "Model prices",
+   "name": "Model Prices",
    "group": 0,
    "href": "model-prices.html",
-   "desc": "Compare prices and context windows across providers."
+   "desc": "Compare LLM API prices per million tokens and context windows across providers, updated daily.",
+   "title": "LLM API Pricing Comparison: Prices & Context Windows"
   },
   {
    "slug": "token-counter",
-   "name": "Token counter",
+   "name": "Token Counter",
    "group": 0,
    "href": "token-counter.html",
    "desc": "Count tokens and check whether your text fits a model's context window."
   },
   {
    "slug": "pdf-to-text",
-   "name": "PDF & web to text",
+   "name": "PDF & Web to Text",
    "group": 1,
    "href": "pdf-to-text.html",
    "desc": "Turn PDFs and web pages into clean, LLM-ready text."
   },
   {
    "slug": "text-cleaner",
-   "name": "AI text cleaner",
+   "name": "AI Text Cleaner",
    "group": 1,
    "href": "text-cleaner.html",
    "desc": "Strip Markdown, invisible characters and em dashes."
   },
   {
    "slug": "chunker",
-   "name": "Chunker",
+   "name": "Text Chunker",
    "group": 1,
    "href": "chunker.html",
-   "desc": "Split long documents into overlapping, token-sized chunks."
+   "desc": "Split long documents into overlapping, token-sized chunks and test which chunk answers a question."
   },
   {
    "slug": "chat-export",
-   "name": "Chat export",
+   "name": "Chat Export",
    "group": 2,
    "href": "chat-export.html",
    "desc": "Convert ChatGPT and Claude chats to Markdown, Word or PDF."
   },
   {
    "slug": "prompt-builder",
-   "name": "Prompt builder",
+   "name": "Prompt Builder",
    "group": 2,
    "href": "prompt-builder.html",
    "desc": "Reusable prompt templates with variables, saving and share links."
   },
   {
-   "slug": "prompt-trimmer",
-   "name": "Prompt trimmer",
+   "slug": "prompt-token-optimizer",
+   "name": "Prompt Token Optimizer",
    "group": 2,
-   "href": "prompt-trimmer.html",
-   "desc": "Trim filler from long prompts, review every change, and see the monthly saving."
+   "href": "prompt-token-optimizer.html",
+   "desc": "Cut filler and repeats from long prompts, review every change, and see what it saves."
   },
   {
    "slug": "json-validator",
-   "name": "JSON validator",
+   "name": "JSON Validator",
    "group": 3,
    "href": "json-validator.html",
    "desc": "Validate model output against a simple schema."

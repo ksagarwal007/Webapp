@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Prompt Token Optimizer | LLM Hub</title><meta name="description" content="Cut filler and repeats from long prompts, review every change, and see what it saves."><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><style>body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:#05070d}
+.sh{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,7,13,.94);backdrop-filter:blur(8px);border-bottom:1px solid #1b2a4a;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.sh-in{max-width:1000px;margin:auto;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sh a,.sh summary{color:#e6edf9;text-decoration:none}.sh-logo{font-weight:700;margin-right:auto}.sh-logo b{background:#3b82f6;border-radius:6px;padding:1px 7px;margin-right:6px}
+.sh-nav{display:flex;align-items:center;gap:18px}.sh-nav>a:hover,.sh-dd summary:hover{color:#60a5fa}
+.sh-dd{position:relative}.sh-dd summary{cursor:pointer;list-style:none}.sh-dd summary::-webkit-details-marker{display:none}.sh-dd summary::after{content:" \25BE";font-size:11px}
+.sh-menu{position:absolute;right:0;top:140%;width:min(560px,92vw);max-height:70vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;background:#0b1220;border:1px solid #1b2a4a;border-radius:12px;padding:14px}
+.sh-g i{display:block;font-style:normal;color:#60a5fa;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.sh-g a{display:block;padding:4px 0;font-size:14px}
+.ft{border-top:1px solid #1b2a4a;margin-top:40px;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));color:#8a9bbd;font:13px/1.7 system-ui,sans-serif}.ft-in{max-width:1000px;margin:auto}.ft a{color:#8a9bbd;margin-right:14px;display:inline-block;text-decoration:none}.ft a:hover{color:#60a5fa}
+.rel{max-width:1000px;margin:30px auto 0;padding:0 20px;font-family:system-ui,sans-serif;color:#e6edf9}.rel h3{margin:0 0 10px}
+.tg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tc{display:block;background:#0b1220;border:1px solid #1b2a4a;border-radius:12px;padding:14px;text-decoration:none;color:#e6edf9}.tc:hover{border-color:#3b82f6}.tc b{display:block}.tc span{color:#8a9bbd;font-size:13px}
+@media(max-width:700px){.sh-dd{position:static}.sh-menu{left:0;right:0;top:100%;width:auto;border-radius:0 0 12px 12px;border-width:0 0 1px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));padding:14px 20px}}
+.ft-r{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-bottom:8px}.ft-r b{color:#e6edf9;margin-right:auto}.ft-r a{margin:0}.ft p{margin:0}.ft-n{display:flex;flex-wrap:wrap;gap:4px 18px;justify-content:space-between}
+.b,.btn,.chip,.tb{transition:filter .12s,transform .06s,border-color .12s}
+@media(hover:hover){.b:hover,.btn:hover,.chip:hover,.tb:hover{filter:brightness(1.18)}.chip:hover{border-color:#3b82f6}.tb:not(.on):hover{color:#e6edf9}}
+.b:active,.btn:active,.chip:active,.tb:active{transform:translateY(1px)}
+:focus-visible{outline:2px solid #60a5fa;outline-offset:2px;border-radius:4px}
+.b:disabled,.btn:disabled{opacity:.5;cursor:not-allowed}
+</style><style>:root{--bg:#05070d;--sf:#0b1220;--bd:#1b2a4a;--tx:#e6edf9;--mu:#8a9bbd;--ac:#3b82f6;--ac2:#60a5fa;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:auto;padding:0 20px}h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:14px 0}
+label{display:block;color:var(--mu);font-size:13px;margin:12px 0 4px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:9px;font:inherit}
+textarea{min-height:150px;font:13px ui-monospace,Menlo,Consolas,monospace}input[type=checkbox]{width:auto}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 14px}
+.b{font:inherit;cursor:pointer;border:0;border-radius:8px;background:var(--ac);color:#fff;padding:9px 14px;margin:12px 8px 0 0}.b.s{background:var(--bd)}
+.st{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.st div{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;color:var(--mu);font-size:13px}.st b{display:block;font-size:20px;color:var(--ac2)}
+.ov{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:520px}th,td{padding:7px;border-bottom:1px solid var(--bd);text-align:left}th{color:var(--mu);font-weight:500}th[data-k]{cursor:pointer}
+.note{color:var(--mu);font-size:12px;margin-top:10px}.ok{color:#4ade80}.er{color:#f87171}
+.about h2{font-size:20px;margin:30px 0 6px;color:var(--ac2)}.about p,.about li{color:#b6c3dc}
+details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{color:#b6c3dc;margin:8px 0 0}
+</style><style>.diff{white-space:pre-wrap;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;border:1px solid var(--bd);border-radius:10px;padding:12px;max-height:420px;overflow:auto;background:var(--bg)}
+.diff del{background:#3b1d1d;color:#f87171}.diff ins{background:#12301f;color:#4ade80;text-decoration:none}.diff .c{cursor:pointer}.diff .off{outline:1px dashed #3b82f6;color:#8a9bbd;border-radius:3px}
+.rk{display:inline-block;font-size:11px;border-radius:999px;padding:1px 9px;border:1px solid}.t_safe{color:#4ade80;border-color:#4ade80}.t_likely{color:#60a5fa;border-color:#60a5fa}.t_review{color:#fbbf24;border-color:#fbbf24}
+.rg{margin:14px 0 4px;color:var(--mu);font-size:12px;letter-spacing:.06em;text-transform:uppercase}</style><script src="https://cdn.jsdelivr.net/npm/gpt-tokenizer@2.8.1/dist/o200k_base.js"></script><script src="https://cdn.jsdelivr.net/npm/gpt-tokenizer@2.8.1/dist/cl100k_base.js"></script></head><body>
+<div class="sh" role="banner"><div class="sh-in"><a class="sh-logo" href="index.html"><b>&#9638;</b>LLM Hub</a><div class="sh-nav" role="navigation"><details class="sh-dd"><summary>Tools</summary><div class="sh-menu"><div class="sh-g"><i>Costs and Models</i><a href="cost-forecaster.html">Cost Forecaster</a><a href="model-prices.html">Model Prices</a><a href="token-counter.html">Token Counter</a></div><div class="sh-g"><i>Documents and Text</i><a href="pdf-to-text.html">PDF &amp; Web to Text</a><a href="text-cleaner.html">AI Text Cleaner</a><a href="chunker.html">Text Chunker</a></div><div class="sh-g"><i>Chats and Prompts</i><a href="chat-export.html">Chat Export</a><a href="prompt-builder.html">Prompt Builder</a><a href="prompt-token-optimizer.html">Prompt Token Optimizer</a></div><div class="sh-g"><i>Developer</i><a href="json-validator.html">JSON Validator</a></div></div></details><a href="model-prices.html">Model Prices</a><a href="how-it-works.html">How It Works</a></div></div></div>
+<main><h1>Prompt Token Optimizer</h1><p class="lead">Trim filler and repeats from long prompts, review every change, and see what it saves each month.</p>
+<div class="card"><label>Your prompt</label><textarea id="pi" style="min-height:220px" placeholder="Paste a long prompt here…"></textarea>
+<div class="g"><div><label>Tokenizer</label><select id="tk"><option value="est">Estimate (any model)</option><option value="o200k">OpenAI o200k (exact)</option><option value="cl100k">OpenAI cl100k (exact)</option></select></div><div style="display:flex;align-items:flex-end"><button class="b s" onclick="ex()" style="margin:0">Load an Example</button></div></div></div>
+<div class="card"><div class="st"><div>Before<b id="tb">0</b></div><div>After<b id="ta">0</b></div><div>Saved<b id="tsv">0</b></div><div>Change<b id="tp">0%</b></div></div><p class="note" id="tx"></p><p id="cs" style="margin:8px 0 0;font-size:14px;color:#4ade80"></p><p id="sf" style="margin:10px 0 0;font-size:14px"></p></div>
+<div class="card"><h2 style="margin:0 0 4px;font-size:18px">Suggested Trims</h2><p class="note" style="margin:0 0 6px"><b>Safe</b>: spacing and wordy phrases. <b>Likely safe</b>: filler that rarely changes meaning. <b>Review</b>: can change emphasis or intent, so it is off by default.</p><div id="rl"></div></div>
+<div class="card"><h2 style="margin:0 0 4px;font-size:18px">Review the Changes</h2><p class="note" style="margin:0 0 8px">Red is removed, green is added. Click any change to switch just that one on or off. Dashed outlines are available but off. A dot (·) is a space and ↵ is a line break.</p><div class="diff" id="df">Paste a prompt above to see suggestions.</div></div>
+<div class="card"><h2 style="margin:0 0 6px;font-size:18px">Shorter Prompt</h2><textarea id="po" readonly style="min-height:160px"></textarea><button class="b" onclick="cp()">Copy Shorter Prompt</button></div>
+<div class="card"><h2 style="margin:0 0 6px;font-size:18px">Monthly Savings</h2><label>How is this prompt used?</label><select id="us"><option value="chat">System prompt of a chatbot (re-sent every turn)</option><option value="agent">System prompt of an agent (re-sent every step)</option><option value="batch">Prompt of a batch job (one call each)</option></select>
+<a class="b" id="fc" href="cost-forecaster.html" style="display:inline-block;text-decoration:none">Send to Cost Forecaster</a>
+<p class="note">The forecaster opens with your trimmed size and shows the monthly saving against the original, using your own volume and caching settings.</p></div>
+<div class="about"><h2>What It Is For</h2><p>Long prompts are re-sent on every request, so every wasted word is paid for again and again. This tool finds filler, repeats and wordy phrases, shows each change, and lets you decide what to keep. Then it turns the token saving into a monthly figure in the Cost Forecaster.</p><h2>What to Expect</h2><p>Rule-based trimming is modest. On verbose, human-written prompts, savings of roughly 10 to 30 percent are typical. Bigger cuts usually need a human to merge overlapping instructions or shorten examples.</p><h2>Questions</h2><details class="q"><summary>Will the trimmed prompt behave the same?</summary><p>Not guaranteed. The tool never changes numbers, links, {{variables}}, quoted text, code, tags, or anything inside tags such as &lt;example&gt; and &lt;document&gt;, and it checks that they are all still there. But wording can matter to a model, so test the shorter prompt on a few real inputs before switching.</p></details><details class="q"><summary>Why are some trims off by default?</summary><p>Words like "important", "make sure" and "very" can signal emphasis. Removing them may weaken an instruction, so they are off until you choose.</p></details><details class="q"><summary>Is my prompt uploaded?</summary><p>No. Everything runs in your browser. Nothing is sent anywhere.</p></details><details class="q"><summary>Why might the saving be smaller than expected?</summary><p>If your system prompt is cached, the repeated part is already billed at a reduced rate, so shrinking it saves less. The Cost Forecaster models this when you turn caching on.</p></details></div></main>
+<div class="rel"><h3>Related tools</h3><div class="tg"><a class="tc" href="chat-export.html"><b>Chat Export</b><span>Convert ChatGPT and Claude chats to Markdown, Word or PDF.</span></a><a class="tc" href="prompt-builder.html"><b>Prompt Builder</b><span>Reusable prompt templates with variables, saving and share links.</span></a><a class="tc" href="cost-forecaster.html"><b>Cost Forecaster</b><span>Forecast monthly LLM costs for chatbots, agents and batch jobs.</span></a></div></div>
+<div class="ft"><div class="ft-in"><div class="ft-r"><b>LLM Hub</b><a href="index.html#tools">All Tools</a><a href="how-it-works.html">How It Works</a><a href="mailto:CHANGE-ME@example.com">Feedback</a></div><div class="ft-n"><p>Prices from the open-source LiteLLM catalog, not verified against provider billing. Nothing you paste or upload leaves your browser.</p><p>&copy; 2026 LLM Hub</p></div></div></div>
+<script>(function(){var d=document.querySelector(".sh-dd");if(!d)return;document.addEventListener("click",function(e){if(d.open&&!d.contains(e.target))d.open=false});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&d.open){d.open=false;d.querySelector("summary").focus()}});d.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("a"))d.open=false})})();</script>
+<script>
+const SAMPLE=[['Anthropic','Large (sample)',5,25,1000],['Anthropic','Mid (sample)',3,15,1000],['Anthropic','Small (sample)',1,5,200],['Google','Flash (sample)',0.3,2.5,1000],['Google','Pro (sample)',1.25,10,1000],['OpenAI','Large (sample)',2.5,10,128],['OpenAI','Mini (sample)',0.15,0.6,128]];
+let M=SAMPLE,VF='';
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=x=>'$'+(x>0&&x<0.01?x.toFixed(5):x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+function loadPrices(cb){cb();fetch('prices.json').then(r=>r.json()).then(j=>{M=j.models.map(m=>[m.provider||'Other',m.name,m.in,m.out,m.ctx||128]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:1);VF=j.updated;cb()}).catch(()=>{})}
+function verified(id){const el=document.getElementById(id),d=VF?(Date.now()-new Date(VF))/864e5:null;el.style.color=(d==null||d>7)?'#f87171':'#4ade80';el.textContent=d==null?'Sample prices, not verified. Real prices load once the daily price job is connected.':'Prices last verified '+VF+(d>7?' (over a week old, treat with caution)':'')+' · '+M.length+' models'}
+
+const $=s=>document.getElementById(s);var TX=false;
+const est=t=>t.trim()?Math.ceil((t.length/4+t.trim().split(/\s+/).length/.75)/2):0;
+function tk(t){const k=$('tk').value,g=window['GPTTokenizer_'+k+'_base'];TX=false;if(k!='est'&&g){try{const n=g.encode(t).length;TX=true;return n}catch(e){}}return est(t)}
+const b64=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const RULES=[
+{id:'sp',t:'safe',l:'Extra spaces between words',re:/[ \t]{2,}(?=\S)/g,to:' ',skip:(s,i)=>i===0||s[i-1]=='\n'},
+{id:'tr',t:'safe',l:'Trailing spaces',re:/[ \t]+(?=\n|$)/g,to:''},
+{id:'bl',t:'safe',l:'Extra blank lines',re:/\n{3,}/g,to:'\n\n'},
+{id:'io',t:'safe',l:'"in order to" → "to"',re:/\bin order to\b/gi,to:'to'},
+{id:'df',t:'safe',l:'"due to the fact that" → "because"',re:/\bdue to the fact that\b/gi,to:'because'},
+{id:'at',t:'safe',l:'"at this point in time" → "now"',re:/\b(?:at this point in time|at the present time)\b/gi,to:'now'},
+{id:'ev',t:'safe',l:'"in the event that" → "if"',re:/\bin the event that\b/gi,to:'if'},
+{id:'an',t:'safe',l:'"a number of" → "several"',re:/\ba number of\b/gi,to:'several'},
+{id:'pr',t:'safe',l:'"prior to" → "before"',re:/\bprior to\b/gi,to:'before'},
+{id:'wr',t:'safe',l:'"with regard to" → "about"',re:/\b(?:with regard to|with respect to|in regard to)\b/gi,to:'about'},
+{id:'ab',t:'safe',l:'"is able to" → "can"',re:/\b(?:is|are) able to\b/gi,to:'can'},
+{id:'ut',t:'safe',l:'"utilize" → "use"',re:/\butili[sz]e\b/gi,to:'use'},
+{id:'fp',t:'safe',l:'"for the purpose of" → "for"',re:/\bfor the purpose of\b/gi,to:'for'},
+{id:'gr',t:'likely',l:'Greeting at the start of a line',re:/^(?:hello|hi|hey|greetings)[!,.]?[ \t]+/gim,to:'',cap:true},
+{id:'hp',t:'likely',l:'"I hope you are doing well"',re:/\bi hope (?:you are|you're) (?:doing )?(?:well|good|great)[.!]?\s*/gi,to:'',cap:true},
+{id:'pl',t:'likely',l:'"please" / "kindly"',re:/\b(?:please|kindly)\s+/gi,to:'',cap:true},
+{id:'wy',t:'likely',l:'"I would like you to" / "I want you to"',re:/\b(?:i would like you to|i'd like you to|i want you to|i need you to|i would like for you to)\s+/gi,to:'',cap:true},
+{id:'hg',t:'likely',l:'"basically" / "essentially" / "simply"',re:/\b(?:basically|essentially|simply)[ ,]+/gi,to:'',cap:true},
+{id:'ty',t:'likely',trimL:1,l:'"Thank you in advance" closers',re:/\bthank(?:s| you)(?: so much)?(?: in advance)?[.!]?[ \t]*(?=\n|$)/gim,to:''},
+{id:'dp',t:'likely',l:'Repeated sentences or lines',gen:t=>{const seen=new Set(),out=[],re=/[^.!?\n]+[.!?]*[ \t]*\n?/g;let m;while((m=re.exec(t))){const k=m[0].trim().toLowerCase().replace(/\s+/g,' ');if(k.length<25)continue;if(seen.has(k)){const a=m.index;let b=a+m[0].length;if((a===0||t[a-1]=='\n')&&t[b-1]=='\n'&&t[b]=='\n'&&(a<2||t[a-2]=='\n'))b++;out.push({s:a,e:b,nw:''})}else seen.add(k)}return out}},
+{id:'nt',t:'review',l:'"note that" / "it is important to"',re:/\b(?:please note that|note that|keep in mind that|it is important to note that|it is important that|it is important to)\s+/gi,to:'',cap:true},
+{id:'ms',t:'review',l:'"make sure (that you)"',re:/\bmake sure (?:that )?(?:you )?(?:to )?/gi,to:'',cap:true},
+{id:'yt',t:'review',l:'"your task is to"',re:/\b(?:your task is to|your job is to|you are tasked with|you will be tasked with)\s+/gi,to:'',cap:true},
+{id:'iv',t:'review',l:'"very" / "really" / "extremely"',re:/\b(?:very|really|extremely|incredibly)\s+/gi,to:''},
+{id:'fq',t:'review',trimL:1,l:'"feel free to ask" closers',re:/\b(?:if you have any questions,? )?(?:please )?feel free to (?:ask|reach out)[^.!\n]*[.!]?[ \t]*/gi,to:''},
+{id:'bd',t:'review',l:'Bold markers (**)',re:/\*\*/g,to:''}];
+const ORD={safe:0,likely:1,review:2},NAME={safe:'Safe',likely:'Likely safe',review:'Review'};
+let T='',CH=[],OV=new Map(),ON={};RULES.forEach(r=>ON[r.id]=r.t!='review');
+function prot(t){const R=[];[/```[\s\S]*?```/g,/`[^`\n]+`/g,/\{\{[^}\n]+\}\}|\{[A-Za-z_][\w.]*\}/g,/https?:\/\/[^\s)]+/g,/"[^"\n]{1,300}"/g,/“[^”\n]{1,300}”/g,/<\/?[A-Za-z][^>\n]*>/g,/<(example|examples|sample|document|documents|data|input|output|code|quote|context|text)\b[^>]*>[\s\S]*?<\/\1>/gi].forEach(re=>{let m;while((m=re.exec(t)))R.push([m.index,m.index+m[0].length])});return R}
+function plan(t){const P=prot(t),C=[];
+RULES.forEach(r=>{const cs=[];if(r.gen)r.gen(t).forEach(c=>cs.push(c));else{r.re.lastIndex=0;let m;while((m=r.re.exec(t))){if(m[0]===''){r.re.lastIndex++;continue}if(r.skip&&r.skip(t,m.index,m))continue;let nw=r.to,s=m.index,e=s+m[0].length;
+if(nw&&/[A-Z]/.test(m[0][0]))nw=nw[0].toUpperCase()+nw.slice(1);
+if(!nw&&r.cap&&/[a-z]/.test(t[e]||'')&&(s===0||t[s-1]=='\n'||/[.!?:]\s*$/.test(t.slice(Math.max(0,s-40),s)))){nw=t[e].toUpperCase();e++}
+if(r.trimL&&(t[e]===undefined||t[e]=='\n'))while(s>0&&(t[s-1]==' '||t[s-1]=='\t'))s--;cs.push({s,e,nw})}}
+cs.forEach(c=>{if(P.some(([a,b])=>c.s<b&&c.e>a))return;if(C.some(x=>c.s<x.e&&c.e>x.s))return;C.push({...c,old:t.slice(c.s,c.e),rule:r.id})})});
+return C.sort((a,b)=>a.s-b.s)}
+const isOn=(c,i)=>OV.has(i)?OV.get(i):ON[c.rule];
+function build(){let o='',p=0;CH.forEach((c,i)=>{o+=T.slice(p,c.s)+(isOn(c,i)?c.nw:c.old);p=c.e});return o+T.slice(p)}
+const vis=s=>E(s).replace(/ /g,'·').replace(/\n/g,'↵\n');
+function diff(){let h='',p=0;CH.forEach((c,i)=>{h+=E(T.slice(p,c.s));const on=isOn(c,i),o=c.old.trim()?E(c.old):vis(c.old),n=c.nw.trim()||!c.nw?E(c.nw):vis(c.nw);h+=on?`<span class="c" data-i="${i}"><del>${o}</del>${c.nw?`<ins>${n}</ins>`:''}</span>`:`<span class="c off" data-i="${i}">${o}</span>`;p=c.e});return h+E(T.slice(p))}
+function ents(t){return{numbers:t.match(/\d+(?:[.,]\d+)*/g)||[],links:t.match(/https?:\/\/[^\s)]+/g)||[],variables:t.match(/\{\{[^}\n]+\}\}|\{[A-Za-z_][\w.]*\}/g)||[],'quoted text':t.match(/"[^"\n]{1,300}"/g)||[],code:t.match(/```[\s\S]*?```|`[^`\n]+`/g)||[],tags:t.match(/<\/?[A-Za-z][^>\n]*>/g)||[]}}
+function lost(a,b){const A=ents(a),B=ents(b),m=[];for(const k in A){const sb=new Set(B[k]),l=[...new Set(A[k])].filter(x=>!sb.has(x));if(l.length)m.push(k+': '+l.slice(0,3).join(', '))}return m}
+const D={chat:{U:60,R:250,T:6,N:250000,G:150},agent:{U:400,R:200,T:8,N:20000,G:0},batch:{R:400,N:100000,B:0}};
+function draw(){const R=build(),b=T.trim()?tk(T):0,a=R.trim()?tk(R):0,sv=b-a,pc=b?Math.round(sv/b*100):0;$('po').value=R;
+$('tb').textContent=b.toLocaleString();$('ta').textContent=a.toLocaleString();$('tsv').textContent=sv.toLocaleString();$('tp').textContent=(sv>0?'−':'')+Math.abs(pc)+'%';$('tp').style.color=sv>0?'#4ade80':'';
+const a_=M.map(m=>m[2]).filter(x=>x>0).sort((x,y)=>x-y),med=VF&&a_.length?a_[Math.floor(a_.length/2)]:3,k1=sv*med*1000/1e6;const fm=x=>x<1?'$'+x.toFixed(2):'$'+Math.round(x).toLocaleString('en-US');$('cs').textContent=sv>0?'Saves about '+fm(k1)+' per 1,000 calls, or about '+fm(k1*1000)+' per million calls. Assumes $'+(+med.toFixed(2))+' per 1M input tokens, a typical mid-range price. Indicative only, and for input tokens only.':'';
+$('tx').textContent=!T.trim()?'':TX?'Exact OpenAI token counts.':'Token counts are estimates (about ±10–15%). Pick an OpenAI tokenizer for exact counts.';
+const m=T.trim()?lost(T,R):[];$('sf').style.color=!T.trim()?'':m.length?'#f87171':'#4ade80';$('sf').textContent=!T.trim()?'':m.length?'⚠ Missing from the trimmed prompt, please check: '+m.join(' · '):'✓ Numbers, links, {{variables}}, quoted text, code and tags are all still present.';
+let h='';['safe','likely','review'].forEach(t=>{const rs=RULES.filter(r=>r.t==t&&CH.some(c=>c.rule==r.id));if(!rs.length)return;h+=`<div class="rg">${NAME[t]}</div>`+rs.map(r=>{const cs=CH.filter(c=>c.rule==r.id),ch=cs.reduce((x,c)=>x+c.old.length-c.nw.length,0);return`<label style="display:flex;gap:10px;align-items:center;margin:6px 0;color:var(--tx)"><input type="checkbox" data-r="${r.id}"${ON[r.id]?' checked':''}> <span>${E(r.l)}</span> <span class="note" style="margin:0 0 0 auto;white-space:nowrap">${cs.length} change${cs.length>1?'s':''} · −${ch} chars</span></label>`}).join('')});
+$('rl').innerHTML=h||'<p class="note">'+(T.trim()?'Nothing to trim. This prompt is already tight.':'Suggestions appear here once you paste a prompt.')+'</p>';
+$('df').innerHTML=T.trim()?diff():'Paste a prompt above to see suggestions.';
+const w=$('us').value;$('fc').href=b?'cost-forecaster.html#c~'+b64(JSON.stringify({w,...D[w],S:a,S0:b,C:0,cf:10})):'cost-forecaster.html'}
+function run(){T=$('pi').value;CH=plan(T);OV=new Map();draw()}
+let tm;$('pi').oninput=()=>{clearTimeout(tm);tm=setTimeout(run,120)};$('tk').onchange=draw;$('us').onchange=draw;
+$('rl').onchange=e=>{const r=e.target.dataset.r;if(!r)return;ON[r]=e.target.checked;CH.forEach((c,i)=>{if(c.rule==r)OV.delete(i)});draw()};
+$('df').onclick=e=>{const s=e.target.closest('.c');if(!s)return;const i=+s.dataset.i;OV.set(i,!isOn(CH[i],i));draw()};
+function cp(){navigator.clipboard&&navigator.clipboard.writeText($('po').value)}
+function ex(){$('pi').value='Hello! I hope you are doing well. I would like you to act as a customer support assistant for Acme Co. Please make sure that you always respond in a polite and friendly tone. Never share internal pricing. In order to answer questions, you should utilize the knowledge base that is provided below. Please note that if you are not able to find the answer, you should kindly ask the customer for more details.   Basically, you need to be very helpful.\n\nNever share internal pricing.\n\nWhen the customer asks about refunds, you should respond with the following policy: "Refunds are available within 30 days." Due to the fact that policies change, always check https://acme.example/policy before answering.\n\n\n\nIf you have any questions, feel free to ask. Thank you in advance!';run()}
+loadPrices(draw);
+</script></body></html>

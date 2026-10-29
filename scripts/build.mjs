@@ -25,7 +25,7 @@ for (const f of fs.readdirSync("src/pages").filter((f) => f.endsWith(".html"))) 
     .replaceAll("{{TOOL_CSS}}", () => `<style>${rd("src/partials/tool.css")}</style>`)
     .replaceAll("{{PRICES_JS}}", () => rd("src/partials/prices.js"))
     .replaceAll("{{RELATED}}", () => `<div class="rel"><h3>Related tools</h3><div class="tg">${rel.map(card).join("")}</div></div>`)
-    .replaceAll("{{TITLE}}", () => esc(t.name ? `${t.name} | ${cfg.site.name}` : cfg.site.name))
+    .replaceAll("{{TITLE}}", () => esc(t.name ? `${t.title || t.name} | ${cfg.site.name}` : cfg.site.name))
     .replaceAll("{{DESC}}", () => esc(t.desc || cfg.site.tagline));
   h = shared(h).replace(/\{\{HREF:([\w-]+)\}\}/g, (_, s) => { const x = T.find((t) => t.slug == s); if (!x) throw new Error("Unknown tool slug: " + s); return x.href; });
   const left = h.match(/\{\{[A-Z_]+(?::[\w-]+)?\}\}/); // only our UPPERCASE placeholders; prompt templates use lowercase {{vars}}
