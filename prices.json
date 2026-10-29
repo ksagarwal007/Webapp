@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "source": "LiteLLM community price list",
  "count": 201,
  "models": [
@@ -60,6 +60,7 @@
   {"provider":"Mistral","name":"codestral-2508","in":0.3,"out":0.9,"ctx":128,"cr":0.03},
   {"provider":"Mistral","name":"codestral-latest","in":0.3,"out":0.9,"ctx":128,"cr":0.03},
   {"provider":"Mistral","name":"codestral-mamba-latest","in":0.25,"out":0.25,"ctx":256,"cr":0.025},
+  {"provider":"Mistral","name":"deepseek-v4-1-flash-1017","in":0.3,"out":1.2,"ctx":1049,"cr":0.007},
   {"provider":"Mistral","name":"devstral-latest","in":0.4,"out":2,"ctx":256,"cr":0.04},
   {"provider":"Mistral","name":"devstral-medium-latest","in":0.4,"out":2,"ctx":256,"cr":0.04},
   {"provider":"Mistral","name":"devstral-small-latest","in":0.1,"out":0.3,"ctx":256,"cr":0.01},
@@ -80,8 +81,8 @@
   {"provider":"Mistral","name":"mistral-code-latest","in":0.3,"out":0.9,"ctx":128,"cr":0.03},
   {"provider":"Mistral","name":"mistral-large-2512","in":0.5,"out":1.5,"ctx":262,"cr":0.05},
   {"provider":"Mistral","name":"mistral-large-3","in":0.5,"out":1.5,"ctx":262,"cr":0.05},
-  {"provider":"Mistral","name":"mistral-large-4","in":0.68,"out":2.09,"ctx":1049,"cr":0.068},
-  {"provider":"Mistral","name":"mistral-large-4-0","in":0.68,"out":2.09,"ctx":1049,"cr":0.068},
+  {"provider":"Mistral","name":"mistral-large-4","in":1.36,"out":4.18,"ctx":1049,"cr":0.14},
+  {"provider":"Mistral","name":"mistral-large-4-0","in":1.36,"out":4.18,"ctx":1049,"cr":0.14},
   {"provider":"Mistral","name":"mistral-large-latest","in":0.5,"out":1.5,"ctx":262,"cr":0.05},
   {"provider":"Mistral","name":"mistral-medium","in":1.5,"out":7.5,"ctx":262,"cr":0.15},
   {"provider":"Mistral","name":"mistral-medium-2604","in":1.5,"out":7.5,"ctx":262,"cr":0.15},
@@ -202,7 +203,6 @@
   {"provider":"xAI","name":"grok-build-0.1","in":1,"out":2,"ctx":256,"cr":0.2},
   {"provider":"xAI","name":"grok-build-latest","in":2,"out":6,"ctx":500,"cr":0.3},
   {"provider":"xAI","name":"grok-code-fast","in":1,"out":2,"ctx":256,"cr":0.2},
-  {"provider":"xAI","name":"grok-code-fast-1","in":1,"out":2,"ctx":256,"cr":0.2},
   {"provider":"xAI","name":"grok-code-fast-1-0825","in":1,"out":2,"ctx":256,"cr":0.2}
  ]
 }
