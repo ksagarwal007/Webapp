@@ -7,6 +7,7 @@
 - The `build-site` workflow runs the build automatically whenever you change `src/`, `tools.json` or the build script, and commits the result. Hostinger then deploys it.
 
 ## Common edits
+- **Exports:** the forecaster builds its PDF and Excel files in the browser with no libraries. Both carry the site name (`site.name`) and address (`site.url`, or the address the page is served from) in the header, and page numbers in the footer.
 - **Renamed page:** the optimizer is now `prompt-token-optimizer.html`. Delete the old `prompt-trimmer.html` from your repository if it is still there.
 - **Image URL:** the shareable forecast image always shows the site name and address. It uses `site.url` from `tools.json` if set (for example `yourdomain.com`), otherwise the address the page is served from.
 - **Set your feedback email:** change `site.email` in `tools.json` (the build prints a warning until you do). It appears as the Feedback link in the footer.
