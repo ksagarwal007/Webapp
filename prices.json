@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "source": "LiteLLM community price list",
  "count": 202,
  "models": [
@@ -101,7 +101,6 @@
   {"provider":"Mistral","name":"voxtral-small-2507","in":0.1,"out":0.4,"ctx":33,"cr":0.01},
   {"provider":"Mistral","name":"voxtral-small-latest","in":0.1,"out":0.4,"ctx":33,"cr":0.01},
   {"provider":"Mistral","name":"zai-glm-5","in":1.4,"out":4.4,"ctx":1049,"cr":0.14},
-  {"provider":"Mistral","name":"zai-glm-5-2","in":1.4,"out":4.4,"ctx":1049,"cr":0.14},
   {"provider":"Mistral","name":"zai-glm-5-3","in":1.4,"out":4.4,"ctx":1049,"cr":0.14},
   {"provider":"Mistral","name":"zai-glm-5-3-flash","in":0.15,"out":0.5,"ctx":1049,"cr":0.03},
   {"provider":"Mistral","name":"zai-glm-latest","in":1.4,"out":4.4,"ctx":1049,"cr":0.14},
@@ -137,6 +136,7 @@
   {"provider":"OpenAI","name":"gpt-5.6-sol","in":4,"out":20,"ctx":922,"cr":0.4},
   {"provider":"OpenAI","name":"gpt-5.6-terra","in":2,"out":12,"ctx":922,"cr":0.2},
   {"provider":"OpenAI","name":"gpt-6-astra","in":10,"out":50,"ctx":922,"cr":1},
+  {"provider":"OpenAI","name":"gpt-6-astra-law","in":10,"out":50,"ctx":922,"cr":1},
   {"provider":"OpenAI","name":"gpt-6-luna","in":0.1,"out":0.5,"ctx":922,"cr":0.01},
   {"provider":"OpenAI","name":"gpt-6-rosalind","in":15,"out":75,"ctx":922,"cr":1.5},
   {"provider":"OpenAI","name":"gpt-6-sol","in":2,"out":10,"ctx":922,"cr":0.2},
