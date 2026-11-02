@@ -1,10 +1,15 @@
-# LLM Hub
+# AI Utility Belt
 
 ## How the site is built
 - `src/pages/*.html` are the page sources. `src/partials/` holds the shared header, footer and styles.
 - `tools.json` is the single list of tools. It drives the Tools menu, the landing-page grid, the footer links and each page's "Related tools".
 - `node scripts/build.mjs` combines them into the finished pages in the repo root (`index.html`, `cost-forecaster.html`, ...). Those root files are generated: edit `src/`, not the root files.
 - The `build-site` workflow runs the build automatically whenever you change `src/`, `tools.json` or the build script, and commits the result. Hostinger then deploys it.
+
+## Brand
+- **Name, domain, tagline, email:** all in `tools.json` under `site`. The header, footer, page titles, share image, PDF and Excel read from it.
+- **Live domain:** `site.live` is `true`, so the build adds canonical and social-preview tags, `robots.txt` and `sitemap.xml` for `https://aiutilitybelt.dev`. If the domain ever changes, edit `site.url` and rebuild.
+- **Logo files:** `src/partials/logo.svg` is the source for the header and exports. `favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `logo.svg` and `og-image.png` are the static assets. Replace them to rebrand.
 
 ## Common edits
 - **Exports:** the forecaster builds its PDF and Excel files in the browser with no libraries. Both carry the site name (`site.name`) and address (`site.url`, or the address the page is served from) in the header, and page numbers in the footer.

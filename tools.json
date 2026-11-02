@@ -1,9 +1,11 @@
 {
  "site": {
-  "name": "LLM Hub",
-  "tagline": "Free, private tools for working with AI: forecast costs, compare model prices, count tokens and clean documents.",
-  "email": "CHANGE-ME@example.com",
-  "url": ""
+  "name": "AI Utility Belt",
+  "url": "aiutilitybelt.dev",
+  "tagline": "Private tools for AI costs, tokens and prompts",
+  "description": "Free, private tools for AI work: forecast costs, compare model prices, count tokens, trim prompts and clean documents. Everything runs in your browser.",
+  "email": "contact@aiutilitybelt.dev",
+  "live": true
  },
  "groups": [
   "Costs and Models",
