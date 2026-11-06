@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-05",
+ "updated": "2026-11-06",
  "source": "LiteLLM community price list",
- "count": 202,
+ "count": 204,
  "models": [
   {"provider":"Anthropic","name":"claude-fable-5","in":10,"out":50,"ctx":1000,"cr":1},
   {"provider":"Anthropic","name":"claude-fable-5-1","in":10,"out":50,"ctx":1000,"cr":0.25},
@@ -53,7 +53,8 @@
   {"provider":"Google","name":"gemini-flash-lite-latest","in":0.3,"out":2.5,"ctx":1049,"cr":0.03},
   {"provider":"Google","name":"gemini-gemma-2-27b-it","in":0.35,"out":1.05,"ctx":8},
   {"provider":"Google","name":"gemini-gemma-2-9b-it","in":0.35,"out":1.05,"ctx":8},
-  {"provider":"Google","name":"gemini-omni-1.1-flash","in":1.5,"out":9,"ctx":1049},
+  {"provider":"Google","name":"gemini-omni-1.1-flash","in":1.5,"out":9,"ctx":131},
+  {"provider":"Google","name":"gemini-omni-1.2-flash","in":1.5,"out":9,"ctx":131},
   {"provider":"Google","name":"gemini-pro-latest","in":2,"out":12,"ctx":1049,"cr":0.2},
   {"provider":"Google","name":"gemini-robotics-er-2-preview","in":1,"out":5,"ctx":131,"cr":0.1},
   {"provider":"Google","name":"gemini-robotics-er-2-streaming-preview","in":1,"out":5,"ctx":131},
@@ -137,6 +138,7 @@
   {"provider":"OpenAI","name":"gpt-5.6-terra","in":2,"out":12,"ctx":922,"cr":0.2},
   {"provider":"OpenAI","name":"gpt-6-astra","in":10,"out":50,"ctx":922,"cr":1},
   {"provider":"OpenAI","name":"gpt-6-astra-law","in":10,"out":50,"ctx":922,"cr":1},
+  {"provider":"OpenAI","name":"gpt-6-cyber","in":20,"out":100,"ctx":922,"cr":2},
   {"provider":"OpenAI","name":"gpt-6-luna","in":0.1,"out":0.5,"ctx":922,"cr":0.01},
   {"provider":"OpenAI","name":"gpt-6-rosalind","in":15,"out":75,"ctx":922,"cr":1.5},
   {"provider":"OpenAI","name":"gpt-6-sol","in":2,"out":10,"ctx":922,"cr":0.2},
