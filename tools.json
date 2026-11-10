@@ -5,7 +5,21 @@
   "tagline": "Private tools for AI costs, tokens and prompts",
   "description": "Free, private tools for AI work: forecast costs, compare model prices, count tokens, trim prompts and clean documents. Everything runs in your browser.",
   "email": "contact@aiutilitybelt.dev",
-  "live": true
+  "live": true,
+  "cleanUrls": true,
+  "ads": {
+   "enabled": false,
+   "client": "",
+   "slots": {
+    "top": "",
+    "article": "",
+    "bottom": ""
+   }
+  },
+  "analytics": {
+   "provider": "",
+   "id": ""
+  }
  },
  "groups": [
   "Costs and Models",
@@ -18,14 +32,12 @@
    "slug": "cost-forecaster",
    "name": "Cost Forecaster",
    "group": 0,
-   "href": "cost-forecaster.html",
    "desc": "Forecast monthly LLM costs for chatbots, agents and batch jobs."
   },
   {
    "slug": "model-prices",
    "name": "Model Prices",
    "group": 0,
-   "href": "model-prices.html",
    "desc": "Compare LLM API prices per million tokens and context windows across providers, updated daily.",
    "title": "LLM API Pricing Comparison: Prices & Context Windows"
   },
@@ -33,57 +45,84 @@
    "slug": "token-counter",
    "name": "Token Counter",
    "group": 0,
-   "href": "token-counter.html",
    "desc": "Count tokens and check whether your text fits a model's context window."
   },
   {
    "slug": "pdf-to-text",
    "name": "PDF & Web to Text",
    "group": 1,
-   "href": "pdf-to-text.html",
    "desc": "Turn PDFs and web pages into clean, LLM-ready text."
   },
   {
    "slug": "text-cleaner",
    "name": "AI Text Cleaner",
    "group": 1,
-   "href": "text-cleaner.html",
    "desc": "Strip Markdown, invisible characters and em dashes."
   },
   {
    "slug": "chunker",
    "name": "Text Chunker",
    "group": 1,
-   "href": "chunker.html",
    "desc": "Split long documents into overlapping, token-sized chunks and test which chunk answers a question."
   },
   {
    "slug": "chat-export",
    "name": "Chat Export",
    "group": 2,
-   "href": "chat-export.html",
    "desc": "Convert ChatGPT and Claude chats to Markdown, Word or PDF."
   },
   {
    "slug": "prompt-builder",
    "name": "Prompt Builder",
    "group": 2,
-   "href": "prompt-builder.html",
    "desc": "Reusable prompt templates with variables, saving and share links."
   },
   {
    "slug": "prompt-token-optimizer",
    "name": "Prompt Token Optimizer",
    "group": 2,
-   "href": "prompt-token-optimizer.html",
    "desc": "Cut filler and repeats from long prompts, review every change, and see what it saves."
   },
   {
    "slug": "json-validator",
    "name": "JSON Validator",
    "group": 3,
-   "href": "json-validator.html",
    "desc": "Validate model output against a simple schema."
+  }
+ ],
+ "providers": [
+  {
+   "name": "OpenAI",
+   "slug": "openai-api-pricing",
+   "models": "GPT and o-series models"
+  },
+  {
+   "name": "Anthropic",
+   "slug": "claude-api-pricing",
+   "models": "Claude models",
+   "label": "Anthropic Claude"
+  },
+  {
+   "name": "Google",
+   "slug": "gemini-api-pricing",
+   "models": "Gemini models",
+   "label": "Google Gemini"
+  },
+  {
+   "name": "Mistral",
+   "slug": "mistral-api-pricing",
+   "models": "Mistral models"
+  },
+  {
+   "name": "DeepSeek",
+   "slug": "deepseek-api-pricing",
+   "models": "DeepSeek models"
+  },
+  {
+   "name": "xAI",
+   "slug": "grok-api-pricing",
+   "models": "Grok models",
+   "label": "xAI Grok"
   }
  ]
 }

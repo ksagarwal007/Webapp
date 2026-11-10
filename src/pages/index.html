@@ -15,6 +15,7 @@ h2.sec{text-align:center;margin:48px 0 6px;font-size:26px}.sub{text-align:center
 .tr{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.tr div{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px}.tr p{color:var(--mu);margin:6px 0 0;font-size:14px}
 details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{color:var(--mu);margin:8px 0 0}
 .qc{margin:10px auto 0;max-width:760px;text-align:left;background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:18px}.qc h2{margin:0 0 4px;font-size:18px}.qc p{margin:0 0 10px;color:var(--mu);font-size:14px}.qc textarea,.qc input{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:9px;font:inherit}.qc textarea{min-height:110px;font:13px ui-monospace,Menlo,Consolas,monospace}.qg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}.qg label{display:block;color:var(--mu);font-size:12px;margin-bottom:3px}.qc table{width:100%;border-collapse:collapse;font-size:14px}.qc td{padding:6px 0;border-bottom:1px solid var(--bd)}.qc td:last-child{text-align:right;font-weight:600}.qc .btn{margin:8px 10px 0 0}.qn{font-size:12px;color:var(--mu);margin-top:8px}
+.posts{display:grid;gap:12px}.post{display:block;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;text-decoration:none;color:var(--tx)}.post:hover{border-color:var(--ac)}.post b{display:block;font-size:18px;margin-bottom:4px}.post span{color:var(--mu);font-size:14px}.post time{display:block;color:#5d6e91;font-size:12px;margin-top:6px}
 </style></head><body>
 {{HEADER}}
 <main>
@@ -25,14 +26,15 @@ details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;pad
 <div class="qg"><div><label>Output tokens per request</label><input id="qo" type="number" value="300"></div><div><label>Requests</label><input id="qr" type="number" value="1000"></div><div><label>Estimated tokens</label><b id="qn" style="font-size:22px;color:var(--ac2)">0</b></div></div>
 <table><tbody id="qk"><tr><td class="mu">Paste some text to see costs.</td></tr></tbody></table><p class="qn" id="qv"></p><a class="btn" id="ql" href="{{HREF:cost-forecaster}}">Forecast This in Detail</a><a class="btn s" href="{{HREF:token-counter}}">Exact Token Count</a></section>
 <section class="fl"><div><p class="eb">FLAGSHIP TOOL</p><h2>Cost Forecaster</h2><p>Describe a chatbot, an agent or a batch job and get a monthly cost with an honest accuracy label, a sensitivity breakdown and what-if sliders.</p><a class="btn" href="{{HREF:cost-forecaster}}">Start Forecasting</a></div>
-<ul><li>Three workloads: chatbot, agent, prompt / batch</li><li>Prompt-caching and context-window modeling</li><li>Sensitivity analysis and what-if sliders</li><li>Shareable link, CSV and PDF export</li></ul></section>
+<ul><li>Three workloads: chatbot, agent, prompt / batch</li><li>Prompt-caching and context-window modeling</li><li>Sensitivity analysis and what-if sliders</li><li>Shareable link, Excel, PDF and image export</li></ul></section>
 <h2 class="sec" id="tools">All Tools</h2><p class="sub">Grouped by what you want to do.</p>
 {{GRID}}
-<p class="ds" id="ds">Checking price data…</p>
+<p class="ds" id="ds">{{DATA_LINE}}</p>
 <h2 class="sec">From a PDF to a cost estimate in four steps</h2><p class="sub">The tools work on their own, and they also chain together.</p>
 <ol class="steps"><li><a href="{{HREF:pdf-to-text}}">PDF &amp; Web to Text</a><p>Extract clean text from a document.</p></li><li><a href="{{HREF:text-cleaner}}">AI Text Cleaner</a><p>Remove formatting noise and stray characters.</p></li><li><a href="{{HREF:token-counter}}">Token Counter</a><p>See how many tokens it really is.</p></li><li><a href="{{HREF:cost-forecaster}}">Cost Forecaster</a><p>Turn that into a monthly cost.</p></li></ol>
 <h2 class="sec">Why you can trust the numbers</h2><p class="sub">&nbsp;</p>
 <div class="tr"><div><b>Private by design</b><p>Text, PDFs and chats are processed in your browser. Nothing is uploaded, and shared links carry settings, not your content.</p></div><div><b>Honest accuracy</b><p>Token counts are exact only where a real tokenizer runs. Everything else is labeled as an estimate.</p></div><div><b>Sourced, dated data</b><p>Prices come from an open-source catalog, refreshed daily, with the last-verified date shown.</p></div></div>
+{{LATEST_POSTS}}
 <h2 class="sec" id="faq">Questions</h2><p class="sub">&nbsp;</p>
 <details class="q"><summary>Are my prompts or files uploaded?</summary><p>No. Text, PDFs and chats are processed in your browser. The Cost Forecaster share link contains only your settings.</p></details>
 <details class="q"><summary>How accurate are the token counts?</summary><p>Exact for OpenAI models where the tokenizer loads. For other providers they are estimates, typically within 10 to 15 percent, and labeled as such.</p></details>
@@ -48,8 +50,8 @@ const b64=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/
 function qc(){const t=$('qt').value,n=est(t),o=+$('qo').value||0,r=+$('qr').value||0;$('qn').textContent=n.toLocaleString();
 const R=M.map(m=>({m,c:(n*m[2]+o*m[3])/1e6*r})).sort((a,b)=>a.c-b.c),row=(x,l)=>`<tr><td>${l}: ${E(x.m[0])} ${E(x.m[1])}</td><td>${money(x.c)}</td></tr>`;
 $('qk').innerHTML=n&&R.length?R.slice(0,3).map((x,i)=>row(x,i?'Next':'Cheapest')).join('')+(R.length>3?row(R[R.length-1],'Most expensive'):''):'<tr><td class="mu">Paste some text to see costs.</td></tr>';
-$('qv').textContent='Estimate: token counts are approximate (±10–15%). '+(VF?'Prices verified '+VF+'.':'Sample prices, not real, until the price job is connected.');
-if(n&&R.length)$('ql').href='cost-forecaster.html#c~'+b64(JSON.stringify({w:'batch',S:n,R:o,N:r,B:0,C:0,cf:10,mk:R[0].m[0]+'|'+R[0].m[1]}))}
+$('qv').textContent='Estimate: token counts are approximate (±10–15%). '+(VF?'Prices verified '+VF+'.':'Sample prices shown because the price file could not be loaded.');
+if(n&&R.length)$('ql').href='{{HREF:cost-forecaster}}#c~'+b64(JSON.stringify({w:'batch',S:n,R:o,N:r,B:0,C:0,cf:10,mk:R[0].m[0]+'|'+R[0].m[1]}))}
 ['qt','qo','qr'].forEach(i=>$(i).oninput=qc);loadPrices(qc);
-fetch('prices.json').then(r=>r.json()).then(j=>{document.getElementById('ds').textContent='Prices verified '+j.updated+' · '+(j.count||j.models.length)+' models · '+new Set(j.models.map(m=>m.provider)).size+' providers'}).catch(()=>{document.getElementById('ds').textContent='Price data refreshes daily once the price job is connected.'});
+fetch('/prices.json').then(r=>r.json()).then(j=>{document.getElementById('ds').textContent='Prices verified '+j.updated+' · '+(j.count||j.models.length)+' models · '+new Set(j.models.map(m=>m.provider)).size+' providers'}).catch(()=>{});
 </script></body></html>

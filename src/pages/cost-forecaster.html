@@ -262,5 +262,5 @@ $('shr').ontoggle=()=>{if($('shr').open)spv()};['ssz','sas'].forEach(i=>$(i).onc
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(drawCharts,200)});
 function ui(){sm();rf();calc()}
 lh();ui();
-fetch('prices.json').then(r=>r.json()).then(j=>{M=j.models.map(m=>[m.provider||'Other',m.name,m.in,m.out,m.ctx||128]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:1);VF=j.updated;ui()}).catch(()=>{});
+fetch('/prices.json').then(r=>r.json()).then(j=>{M=j.models.map(m=>[m.provider||'Other',m.name,m.in,m.out,m.ctx||128]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:1);VF=j.updated;ui()}).catch(()=>{});
 </script></body></html>

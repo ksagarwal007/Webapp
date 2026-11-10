@@ -22,7 +22,7 @@ function calc(){const t=$('tt').value,n=tk(t);$('tl').textContent=TX?'Tokens (ex
 const R=M.map(m=>({m,c:n*m[2]/1e6,ok:n<=m[4]*1000})).sort((a,b)=>a.c-b.c||a.m[4]-b.m[4]);
 $('rk').innerHTML=n?R.slice(0,3).map((x,i)=>`<tr><td>${i+1}</td><td>${E(x.m[0])} ${E(x.m[1])}</td><td><b>${money(x.c)}</b></td><td class="${x.ok?'ok':'er'}">${x.ok?'fits':'too long'}</td></tr>`).join(''):'<tr><td colspan="4" class="note">Paste some text to see costs.</td></tr>';
 $('cf').textContent=R.filter(x=>x.ok).length+' of '+R.length+' models';
-if(n&&R.length)$('fl').href='cost-forecaster.html#c~'+b64(JSON.stringify({w:$('us').value,...D[$('us').value],S:n,C:0,cf:10,mk:R[0].m[0]+'|'+R[0].m[1]}));verified('vf')}
+if(n&&R.length)$('fl').href='{{HREF:cost-forecaster}}#c~'+b64(JSON.stringify({w:$('us').value,...D[$('us').value],S:n,C:0,cf:10,mk:R[0].m[0]+'|'+R[0].m[1]}));verified('vf')}
 const D={chat:{U:60,R:250,T:6,N:250000,G:150},agent:{U:400,R:200,T:8,N:20000,G:0},batch:{R:400,N:100000,B:0}};$('us').onchange=calc;
 ['tt','tk'].forEach(i=>$(i).oninput=calc);loadPrices(calc);
 </script></body></html>

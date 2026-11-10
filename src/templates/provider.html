@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}{{PROSE_CSS}}</head><body>
+{{HEADER}}
+<main class="prose"><h1>{{PROV_NAME}} API Pricing</h1><p class="meta">Price per million tokens &middot; {{PROV_COUNT}} models &middot; prices verified {{PRICES_DATE}}</p>
+<p>{{PROV_INTRO}}</p>
+<div class="ov"><table class="pt"><thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Context (K tokens)</th></tr></thead><tbody>{{PROV_ROWS}}</tbody></table></div>
+<h2>How to Read These Prices</h2><p>Providers bill input tokens (what you send) and output tokens (what the model writes) separately, per million tokens. Output is usually several times more expensive. Context is the largest request the model accepts, in thousands of tokens. A typical English word is about 1.3 tokens.</p>
+<div class="callout"><b>Work out what it would cost you</b><a href="{{HREF:cost-forecaster}}">Cost Forecaster</a> turns these prices into a monthly estimate for a chatbot, agent or batch job. <a href="{{HREF:model-prices}}">Model Prices</a> lets you compare {{PROV_NAME}} against other providers.</div>
+<p class="meta">Prices come from the open-source LiteLLM catalog and are not verified against provider billing. Check {{PROV_NAME}}'s own pricing page before committing to a budget.</p>
+<h2>Other Providers</h2><p>{{PROV_LINKS}}</p></main>
+{{AD:bottom}}
+{{FOOTER}}
+</body></html>

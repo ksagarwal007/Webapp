@@ -1,44 +1,110 @@
 <!--slug:model-prices-->
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}<style>.tw{max-height:440px;overflow:auto;border:1px solid var(--bd);border-radius:10px}.tw table{margin:0}#ch th{position:sticky;top:0;background:#0b1220;z-index:1}</style></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}<style>
+.tw{max-height:440px;overflow:auto;border:1px solid var(--bd);border-radius:10px}.tw table{margin:0}#ch th{position:sticky;top:0;background:#0b1220;z-index:1}
+.sw{display:flex;gap:8px;align-items:center}.sw .b{margin:0;white-space:nowrap}.rc{margin:8px 0 2px;color:var(--ac2);font-weight:600;font-size:14px}
+details.mf{margin-top:8px}details.mf summary{cursor:pointer;color:var(--ac2);font-size:14px;padding:6px 0}.mo{display:none}
+tr.dim{opacity:.45}input[type=checkbox]{width:18px;height:18px;accent-color:#3b82f6}
+#tray{display:none;position:sticky;bottom:10px;margin-top:10px;background:#0b1220;border:1px solid var(--ac);border-radius:10px;padding:8px 12px;z-index:3;align-items:center;gap:10px;flex-wrap:wrap}#tray .tl{margin:0;font-size:13px;color:var(--tx)}#tray .wn{color:#fbbf24;font-size:12px;flex-basis:100%}
+.xb{display:flex;flex-wrap:wrap;gap:0}.xb .b{margin-top:12px}
+@media(max-width:700px){.mo{display:block}
+.tw{max-height:none;border:0;overflow:visible}.tw table{display:block;min-width:0}.tw thead{display:none}.tw tbody{display:block}
+.tw tr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 10px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:10px 0}
+.tw td{display:block;border:0;padding:0}.tw td::before{content:attr(data-label);display:block;color:var(--mu);font-size:11px}
+.tw td[data-label=Model]{grid-column:1/-1;order:-2;font-weight:600;font-size:16px}.tw td[data-label=Model]::before,.tw td[data-label=Provider]::before{display:none}
+.tw td[data-label=Provider]{grid-column:1/-1;order:-1;color:var(--mu);font-size:13px}
+.tw td[data-label=Compare]{grid-column:1/-1;order:9;display:flex;align-items:center;gap:8px;border-top:1px solid var(--bd);padding-top:8px;margin-top:4px}.tw td[data-label=Compare]::before{order:1;display:inline;font-size:14px;color:var(--tx)}.tw td[data-label=Compare] input{width:22px;height:22px}
+#cb tr.dim{opacity:.5}
+}
+.cmp table{min-width:0}.cmp th:first-child{white-space:nowrap}
+@media(max-width:700px){.cmp .ov{overflow-x:auto}.cmp table{min-width:420px}}
+</style></head><body>
 {{HEADER}}
 <main><h1>LLM Prices &amp; Context Windows</h1><p class="lead">Compare per-million-token prices and context sizes across providers, then tick up to four models to compare them side by side.</p>
-<div class="card"><p class="note" id="vf" style="margin:0 0 6px"></p>
-<div class="g"><div><label>Search</label><input id="fq" placeholder="model or provider"></div><div><label>Provider</label><select id="fp"></select></div><div><label>Max input $/1M</label><input id="fm" type="number" step="any"></div><div><label>Min context (K tokens)</label><input id="fc" type="number"></div></div>
-<p class="note" id="cn"></p><div class="ov tw"><table><thead id="ch"><tr><th>Compare</th><th data-k="0">Provider</th><th data-k="1">Model</th><th data-k="2">Input $/1M</th><th data-k="3">Output $/1M</th><th data-k="4">Context (K)</th></tr></thead><tbody id="cb"></tbody></table></div>
-<div id="tray" style="display:none;position:sticky;bottom:10px;margin-top:10px;background:#0b1220;border:1px solid var(--ac);border-radius:10px;padding:8px 12px;z-index:3;align-items:center;gap:10px;flex-wrap:wrap"><span class="note" id="tl" style="margin:0"></span><button class="b" style="margin:0" onclick="go()">View Comparison</button><button class="b s" style="margin:0" onclick="clr()">Clear</button></div>
+<div class="card"><p class="note" id="vf" style="margin:0 0 6px">Prices come from an open-source catalog, refreshed daily. Last verified {{PRICES_DATE}}.</p>
+<label for="fq">Search models</label><div class="sw"><input id="fq" type="search" placeholder="Try gpt, claude or gemini" autocomplete="off"><button class="b s" id="fx" hidden>Clear</button></div>
+<p class="rc" id="cn" role="status" aria-live="polite">{{PRICE_COUNT}}</p>
+<div class="g"><div><label for="fp">Provider</label><select id="fp"><option value="">All providers</option></select></div><div class="mo"><label for="fs">Sort by</label><select id="fs"><option value="0,1">Provider (A to Z)</option><option value="1,1">Model (A to Z)</option><option value="2,1">Input price (low to high)</option><option value="3,1">Output price (low to high)</option><option value="4,-1">Context (largest first)</option></select></div></div>
+<details class="mf" id="mf"><summary>More filters</summary><div class="g"><div><label for="fm">Max input $/1M</label><input id="fm" type="number" step="any" inputmode="decimal"></div><div><label for="fc">Min context (K tokens)</label><input id="fc" type="number" inputmode="numeric"></div></div></details>
+<div class="ov tw" style="margin-top:12px"><table><thead id="ch"><tr><th>Compare</th><th data-k="0">Provider</th><th data-k="1">Model</th><th data-k="2">Input $/1M</th><th data-k="3">Output $/1M</th><th data-k="4">Context (K)</th></tr></thead><tbody id="cb">{{PRICE_ROWS}}</tbody></table></div>
+<div id="tray"><span class="tl" id="tl"></span><button class="b" style="margin:0" onclick="go()">View Comparison</button><button class="b s" style="margin:0" onclick="clr()">Clear</button><span class="wn" id="tw" hidden>Maximum of four models reached. Untick one to choose another.</span></div>
 <button class="b s" onclick="csv()">Download CSV</button></div>
-<div class="card" id="cmpc" style="display:none"><h2 style="margin:0 0 4px;font-size:18px">Compare Models</h2><p class="note" id="cmsg" style="margin:0 0 8px"></p>
+<div class="card cmp" id="cmpc" style="display:none"><h2 style="margin:0 0 4px;font-size:18px">Compare Models</h2><p class="note" id="cmsg" style="margin:0 0 8px"></p>
 <div class="g"><div><label>Input tokens per request</label><input id="ci" type="number" value="2000" min="0"></div><div><label>Output tokens per request</label><input id="co" type="number" value="500" min="0"></div><div><label>Requests per month</label><input id="cr" type="number" value="10000" min="0"></div></div>
 <div class="ov" style="margin-top:12px"><table id="ct"></table></div>
-<button class="b" onclick="cpl()">Copy Compare Link</button><button class="b s" onclick="clr()">Clear Selection</button></div>
-<div class="about"><h2>What It Is For</h2><p>Compare what each model charges per million tokens and how much context it can hold, then filter down to the ones that fit your budget and your documents. Click a column header to sort. Tick up to four models, from any provider, to compare them side by side for your own usage.</p><h2>How to Compare Models</h2><p>Search for a model, tick its box, then search for another and tick that too. Your ticks stay while you change the search or filters. Set typical token sizes and monthly requests to see what each model would cost, and copy the compare link to share the exact selection.</p><h2>Questions</h2><details class="q"><summary>Where do the prices come from?</summary><p>From the open-source LiteLLM catalog, refreshed daily by an automated job that checks for suspicious changes. They are not verified against provider billing, so confirm on the provider page before relying on a number.</p></details><details class="q"><summary>Why are some models missing?</summary><p>The list covers the main providers and chat models. Cloud-reseller duplicates, embeddings, fine-tunes and deprecated models are left out.</p></details><details class="q"><summary>What does a price per million tokens mean?</summary><p>Providers bill input and output tokens separately, per million. A typical English word is about 1.3 tokens.</p></details><details class="q"><summary>Can I reuse this data?</summary><p>The prices come from an open-source catalog, so you can get them there directly. Please credit the source if you republish them.</p></details></div></main>
+<div class="xb"><button class="b" onclick="xl()">Download Excel</button><button class="b s" onclick="pf()">Download PDF</button><button class="b s" onclick="im()">Download Image</button><button class="b s" onclick="shr()">Share Image</button><button class="b s" onclick="cpl()">Copy Compare Link</button><button class="b s" onclick="clr()">Clear Selection</button></div><p class="note" id="xm"></p></div>
+<div class="about"><h2>What It Is For</h2><p>Compare what each model charges per million tokens and how much context it can hold, then filter down to the ones that fit your budget and your documents. Click a column header to sort. Tick up to four models, from any provider, to compare them side by side for your own usage.</p><h2>How to Compare Models</h2><p>Search for a model, tick its box, then search for another and tick that too. Your ticks stay while you change the search or filters. Set typical token sizes and monthly requests to see what each model would cost, then download the comparison as Excel, PDF or an image, or copy the link to share the exact selection.</p><h2>Prices by Provider</h2><p>{{PROVIDER_LINKS}}</p><h2>Questions</h2><details class="q"><summary>Where do the prices come from?</summary><p>From the open-source LiteLLM catalog, refreshed daily by an automated job that checks for suspicious changes. They are not verified against provider billing, so confirm on the provider page before relying on a number.</p></details><details class="q"><summary>Why are some models missing?</summary><p>The list covers the main providers and chat models. Cloud-reseller duplicates, embeddings, fine-tunes and deprecated models are left out.</p></details><details class="q"><summary>What does a price per million tokens mean?</summary><p>Providers bill input and output tokens separately, per million. A typical English word is about 1.3 tokens.</p></details><details class="q"><summary>Can I reuse this data?</summary><p>The prices come from an open-source catalog, so you can get them there directly. Please credit the source if you republish them.</p></details></div></main>
 {{RELATED}}
 {{FOOTER}}
 <script>
 {{PRICES_JS}}
+const SITE={{SITE_JSON}},SURL={{SITE_URL_JSON}}||location.host||'',LOGO_IN={{LOGO_JSON}},EXU='{{EXPORTS_URL}}';
 const $=s=>document.getElementById(s);let S={k:0,d:1},SEL=[];
 const key=m=>m[0]+'|'+m[1];
 const b64=s=>btoa(String.fromCharCode(...new TextEncoder().encode(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const ub64=s=>new TextDecoder().decode(Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0)));
+function syncDis(){const full=SEL.length>=4;document.querySelectorAll('#cb input[type=checkbox]').forEach(c=>{const on=SEL.includes(c.dataset.k);c.checked=on;c.disabled=full&&!on;const tr=c.closest('tr');if(tr)tr.classList.toggle('dim',full&&!on)})}
 function draw(){const q=$('fq').value.toLowerCase().split(/\s+/).filter(Boolean),p=$('fp').value,mx=parseFloat($('fm').value),mc=parseFloat($('fc').value),ps=[...new Set(M.map(m=>m[0]))];
 if($('fp').options.length!=ps.length+1){$('fp').innerHTML='<option value="">All providers</option>'+ps.map(x=>`<option>${E(x)}</option>`).join('');$('fp').value=p}
+$('fx').hidden=!$('fq').value;
 const R=M.filter(m=>q.every(w=>(m[0]+' '+m[1]).toLowerCase().includes(w))&&(!p||m[0]==p)&&(isNaN(mx)||m[2]<=mx)&&(isNaN(mc)||m[4]>=mc)).sort((a,b)=>(a[S.k]>b[S.k]?1:a[S.k]<b[S.k]?-1:0)*S.d);
-$('cb').innerHTML=R.slice(0,500).map(m=>`<tr><td><input type="checkbox" data-k="${E(key(m))}" aria-label="Compare ${E(m[1])}"${SEL.includes(key(m))?' checked':''}></td><td>${E(m[0])}</td><td>${E(m[1])}</td><td>${m[2]}</td><td>${m[3]}</td><td>${m[4]}</td></tr>`).join('')||'<tr><td colspan="6">No models match.</td></tr>';
-window.CNB=R.length+' of '+M.length+' models'+(R.length>500?' (showing the first 500, narrow with the filters)':'');verified('vf');window.RR=R;cmp()}
+$('cb').innerHTML=R.slice(0,500).map(m=>`<tr><td data-label="Compare"><input type="checkbox" data-k="${E(key(m))}" aria-label="Compare ${E(m[1])}"></td><td data-label="Provider">${E(m[0])}</td><td data-label="Model">${E(m[1])}</td><td data-label="Input $/1M">${m[2]}</td><td data-label="Output $/1M">${m[3]}</td><td data-label="Context (K)">${m[4]}</td></tr>`).join('')||'<tr><td colspan="6">No models match. Try a shorter search or clear the filters.</td></tr>';
+window.RR=R;const fl=!!(q.length||p||!isNaN(mx)||!isNaN(mc));
+$('cn').textContent=(fl?'Showing '+R.length+' of '+M.length+' models':M.length+' models')+(R.length>500?' (first 500 shown, narrow with the filters)':'');
+verified('vf');syncDis();cmp()}
 function go(){$('cmpc').scrollIntoView({behavior:'smooth',block:'start'})}
-function cmp(){$('tray').style.display=SEL.length?'flex':'none';$('tl').textContent=SEL.length+' selected: '+SEL.map(k=>k.split('|')[1]).join(', ');$('cn').textContent=(window.CNB||'')+(SEL.length?' · '+SEL.length+' selected, shown in the comparison below the table':'');const ms=SEL.map(k=>M.find(m=>key(m)==k)).filter(Boolean);$('cmpc').style.display=SEL.length?'block':'none';if(!SEL.length)return;
+function tray(){const n=SEL.length;$('tray').style.display=n?'flex':'none';document.body.classList.toggle('tray-on',n>0);$('tl').innerHTML='<b>'+n+' of 4 selected</b>: '+SEL.map(k=>E(k.split('|')[1])).join(', ');$('tw').hidden=n<4}
+const cd=()=>{const ms=SEL.map(k=>M.find(m=>key(m)==k)).filter(Boolean),i=+$('ci').value||0,o=+$('co').value||0,r=+$('cr').value||0,cs=ms.map(m=>(i*m[2]+o*m[3])/1e6*r);return{ms,i,o,r,cs,lo:Math.min(...cs)}};
+function cmp(){tray();$('cmpc').style.display=SEL.length?'block':'none';if(!SEL.length){try{history.replaceState(null,'',location.pathname)}catch(e){}return}
+const{ms,i,o,r,cs,lo}=cd();
 $('cmsg').textContent=ms.length<2?'Tick at least one more model to compare. Up to four can be compared.':'Costs use the token sizes and volume below. Output tokens are billed at the output price.';
-const i=+$('ci').value||0,o=+$('co').value||0,r=+$('cr').value||0,cs=ms.map(m=>(i*m[2]+o*m[3])/1e6*r),lo=Math.min(...cs);
 const row=(l,f)=>`<tr><th>${l}</th>${ms.map((m,j)=>`<td>${f(m,j)}</td>`).join('')}</tr>`;
 $('ct').innerHTML=`<tr><th></th>${ms.map(m=>`<th>${E(m[1])}<div class="note" style="margin:2px 0 0">${E(m[0])}</div></th>`).join('')}</tr>`+row('Input $/1M',m=>m[2])+row('Output $/1M',m=>m[3])+row('Output vs input price',m=>m[2]>0?(m[3]/m[2]).toFixed(1)+'×':'-')+row('Context (K tokens)',m=>m[4])+row('Fits your input + output?',m=>(i+o)<=m[4]*1000?'<span class="ok">yes</span>':'<span class="er">no</span>')+row('Cost per request',(m,j)=>money(cs[j]/(r||1)))+row('Cost per month',(m,j)=>`<b class="${cs[j]===lo&&ms.length>1?'ok':''}">${money(cs[j])}</b>`)+row('Versus cheapest',(m,j)=>cs[j]===lo?'cheapest':lo>0?(cs[j]/lo).toFixed(1)+'×':'-');
 try{history.replaceState(null,'',SEL.length?'#cmp~'+b64(JSON.stringify({k:SEL,i,o,r})):location.pathname)}catch(e){}}
-$('cb').addEventListener('change',e=>{const k=e.target.dataset.k;if(!k)return;if(e.target.checked){if(SEL.length>=4){e.target.checked=false;$('cmpc').style.display='block';$('cmsg').textContent='You can compare up to four models. Untick one first.';return}SEL.push(k)}else SEL=SEL.filter(x=>x!=k);cmp()});
+$('cb').addEventListener('change',e=>{const k=e.target.dataset.k;if(!k)return;if(e.target.checked){if(SEL.length>=4){e.target.checked=false;return}SEL.push(k)}else SEL=SEL.filter(x=>x!=k);syncDis();cmp()});
 ['ci','co','cr'].forEach(id=>$(id).oninput=cmp);
-function clr(){SEL=[];draw()}
-function cpl(){const u=location.href.split('#')[0]+'#cmp~'+b64(JSON.stringify({k:SEL,i:+$('ci').value||0,o:+$('co').value||0,r:+$('cr').value||0}));(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{$('cmsg').textContent='Compare link copied.'},()=>{$('cmsg').textContent='Copy this address: '+u})}
+function clr(){SEL=[];syncDis();cmp()}
+function cpl(){const u=location.href.split('#')[0]+'#cmp~'+b64(JSON.stringify({k:SEL,i:+$('ci').value||0,o:+$('co').value||0,r:+$('cr').value||0}));(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{$('xm').textContent='Compare link copied.'},()=>{$('xm').textContent='Copy this address: '+u})}
 function lh(){const h=location.hash.slice(1);if(!h.startsWith('cmp~'))return;try{const x=JSON.parse(ub64(h.slice(4)));SEL=(x.k||[]).slice(0,4).map(String);$('ci').value=x.i||2000;$('co').value=x.o||500;$('cr').value=x.r||10000}catch(e){}}
-$('ch').onclick=e=>{const k=e.target.dataset.k;if(k==null)return;S.d=S.k==+k?-S.d:1;S.k=+k;draw()};['fq','fp','fm','fc'].forEach(i=>$(i).oninput=draw);
+$('ch').onclick=e=>{const k=e.target.dataset.k;if(k==null)return;S.d=S.k==+k?-S.d:1;S.k=+k;draw()};
+$('fs').onchange=()=>{const[a,b]=$('fs').value.split(',');S.k=+a;S.d=+b;draw()};
+$('fx').onclick=e=>{e.preventDefault();$('fq').value='';draw();$('fq').focus()};
+['fq','fp','fm','fc'].forEach(i=>$(i).oninput=draw);
+const mf=$('mf');if(matchMedia('(min-width:701px)').matches)mf.open=true;
 const cs_=v=>{v=String(v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
 function csv(){const R=[['Provider','Model','Input USD per 1M','Output USD per 1M','Context K tokens'],...(window.RR||[])];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([R.map(x=>x.map(cs_).join(',')).join('\n')],{type:'text/csv'}));a.download='model-prices.csv';a.click()}
-lh();loadPrices(draw);
+/* ---------- Compare exports ---------- */
+const nm=(n)=>n.toLocaleString('en-US');const p2=v=>{const s=String(+v);return s.includes('.')&&s.split('.')[1].length<2?(+v).toFixed(2):s};
+const today=()=>new Date().toISOString().slice(0,10);
+function assume(c){return nm(c.i)+' input + '+nm(c.o)+' output tokens per request · '+nm(c.r)+' requests per month'}
+function cardSvg(){const c=cd(),W=1200,H=630,n=c.ms.length,px=56,gap=16,cw=(W-2*px-gap*(n-1))/n,y0=140,t=(s,x,y,z,w,f,a)=>`<text x='${x}' y='${y}' font-size='${z}' font-weight='${w}' fill='${f}' text-anchor='${a||'start'}' font-family='Helvetica,Arial,sans-serif'>${E(s)}</text>`;
+const fit=(s,mw,z,b)=>{while(UB.tw(s,z,b)>mw&&z>13)z--;return z};
+let s=`<svg xmlns='http://www.w3.org/2000/svg' width='${W}' height='${H}' viewBox='0 0 ${W} ${H}'><rect width='${W}' height='${H}' fill='#05070d'/>`;
+const nmw=SITE.split(' '),fw=nmw.shift();
+s+=`<g transform='translate(${px} 30) scale(.65)'>${LOGO_IN}</g>`+`<text x='${px+52}' y='62' font-size='26' font-weight='700' font-family='Helvetica,Arial,sans-serif'><tspan fill='#60a5fa'>${E(fw)}</tspan><tspan fill='#e6edf9'> ${E(nmw.join(' '))}</tspan></text>`+t('Model Comparison',W-px,62,22,400,'#8a9bbd','end')+t(assume(c),px,112,19,400,'#8a9bbd');
+c.ms.forEach((m,j)=>{const x=px+j*(cw+gap),ch=c.cs[j]===c.lo&&n>1,cx=x+16,mw=cw-32,top=ch?'#4ade80':'#60a5fa';
+s+=`<rect x='${x}' y='${y0}' width='${cw}' height='400' rx='16' fill='#0b1220' stroke='${ch?'#3b82f6':'#1b2a4a'}' stroke-width='${ch?2:1}'/>`;
+if(ch)s+=t('CHEAPEST',x+cw-16,y0+24,12,700,'#4ade80','end');
+const z1=fit(m[1],mw,26,1);s+=t(m[1],cx,y0+52,z1,700,'#e6edf9')+t(m[0],cx,y0+80,17,400,'#8a9bbd')+t('Cost per month',cx,y0+118,14,400,'#8a9bbd');
+const cm=money(c.cs[j]);s+=t(cm,cx,y0+166,fit(cm,mw,44,1),700,top);
+const rows=[['Input price','$'+p2(m[2])+' / 1M'],['Output price','$'+p2(m[3])+' / 1M'],['Context window',nm(m[4])+'K tokens'],['Output vs input',m[2]>0?(m[3]/m[2]).toFixed(1)+'x':'-'],['Fits your workload',(c.i+c.o)<=m[4]*1000?'Yes':'No']];
+rows.forEach((r,k)=>{const ry=y0+214+k*39,ok=r[0]=='Fits your workload'?(r[1]=='Yes'?'#4ade80':'#f87171'):'#e6edf9';s+=t(r[0],cx,ry,13,400,'#8a9bbd')+t(r[1],cx,ry+21,fit(r[1],mw,18,0),600,ok)});
+});
+s+=`<line x1='${px}' y1='566' x2='${W-px}' y2='566' stroke='#1b2a4a'/>`+t('Estimate · prices as of '+(VF||today()),px,600,15,400,'#8a9bbd')+`<text x='${W-px}' y='600' font-size='19' text-anchor='end' font-family='Helvetica,Arial,sans-serif'><tspan font-weight='700' fill='#e6edf9'>${E(SITE)}</tspan><tspan fill='#60a5fa'>  ${E(SURL)}</tspan></text></svg>`;return s}
+async function png(){await lazy(EXU);return new Blob([await UB.rast(cardSvg(),1200,630,'image/png')],{type:'image/png'})}
+const say=t=>{$('xm').textContent=t};
+async function im(){try{say('Preparing image…');UB.saveBlob(await png(),'ai-utility-belt-model-comparison.png');say('Image downloaded.')}catch(e){say('Could not create the image: '+e.message)}}
+async function shr(){try{say('Preparing image…');const r=await UB.share(await png(),'ai-utility-belt-model-comparison.png','Model comparison');say(r=='shared'?'Shared.':r=='cancelled'?'':'Sharing is not available here, so the image was downloaded instead.')}catch(e){say('Could not share the image: '+e.message)}}
+function tdata(){const c=cd(),ms=c.ms,usd=v=>({n:v,f:'usd'}),ratio=m=>m[2]>0?(m[3]/m[2]).toFixed(1)+'x':'-';
+return{c,head:['',...ms.map(m=>m[0]+' '+m[1])],rows:[['Provider',...ms.map(m=>m[0])],['Input $/1M',...ms.map(m=>usd(+m[2]))],['Output $/1M',...ms.map(m=>usd(+m[3]))],['Output vs input price',...ms.map(ratio)],['Context (K tokens)',...ms.map(m=>({n:+m[4],f:'int'}))],['Fits your input + output?',...ms.map(m=>(c.i+c.o)<=m[4]*1000?'Yes':'No')],['Cost per request',...c.cs.map(v=>usd(v/(c.r||1)))],['Cost per month',...c.cs.map(usd)],['Versus cheapest',...c.cs.map(v=>v===c.lo?'Cheapest':c.lo>0?(v/c.lo).toFixed(1)+'x':'-')]]}}
+const base=()=>({site:SITE,url:SURL,logo:LOGO_IN,label:'Model Comparison',date:today(),title:'Model Comparison'});
+async function pf(){try{if(SEL.length<1)return;say('Preparing PDF…');await lazy(EXU);const d=tdata(),n=d.c.ms.length,cols=[.28,...Array(n).fill(.72/n)];
+const pdf=await UB.pdf({...base(),sub:assume(d.c)+'. Prices as of '+(VF||today())+'.',items:[{t:'table',cols,head:d.head,rows:d.rows.map(r=>r.map((v,i)=>typeof v=='object'?(v.f=='usd'?money(v.n):nm(v.n)):v)),boldFirst:true},{t:'gap',n:6},{t:'note',text:'Prices are per million tokens and come from an open-source catalog. They are estimates, not provider quotes. Confirm on the provider\'s pricing page before relying on them.'}]});
+UB.saveBlob(pdf,'ai-utility-belt-model-comparison.pdf');say('PDF downloaded.')}catch(e){say('Could not create the PDF: '+e.message)}}
+async function xl(){try{if(SEL.length<1)return;say('Preparing Excel file…');await lazy(EXU);const d=tdata(),n=d.c.ms.length,img=await UB.rast(cardSvg(),1200,630,'image/png');
+const x=await UB.xlsx({...base(),sheet:'Comparison',sub:assume(d.c)+'. Prices as of '+(VF||today())+'.',widths:[30,...Array(n).fill(30)],head:d.head,rows:d.rows,bold:[7],notes:['Prices are per million tokens from an open-source catalog. Estimates, not provider quotes.'],image:{u8:img,cx:6096000,cy:3200400,name:'Comparison image'}});
+UB.saveBlob(x,'ai-utility-belt-model-comparison.xlsx');say('Excel file downloaded.')}catch(e){say('Could not create the Excel file: '+e.message+'. Try the PDF or CSV instead.')}}
+/* ---------- Start: pre-rendered rows stay until real prices arrive ---------- */
+lh();
+const hasStatic=document.querySelector('#cb tr input');
+fetch('/prices.json').then(r=>r.json()).then(j=>{M=j.models.map(m=>[m.provider||'Other',m.name,m.in,m.out,m.ctx||128]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:1);VF=j.updated;draw()}).catch(()=>{if(!hasStatic)draw()});
 </script></body></html>

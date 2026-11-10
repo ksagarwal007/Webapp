@@ -1,5 +1,5 @@
 <!--slug:pdf-to-text-->
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">{{SHARED_CSS}}{{TOOL_CSS}}</head><body>
 {{HEADER}}
 <main><h1>PDF &amp; Web Page to Clean Text</h1><p class="lead">Extract LLM-ready text from a PDF or a saved web page. Files are read in your browser and never uploaded.</p>
 <div class="card"><label>PDF, saved .html page or .txt file</label><input type="file" id="df" accept=".pdf,.html,.htm,.txt">
@@ -16,7 +16,7 @@
 const $=s=>document.getElementById(s);let PG=null,TXT='',FN='';
 const est=t=>t.trim()?Math.ceil((t.length/4+t.trim().split(/\s+/).length/.75)/2):0;
 function rf(t){return t.replace(/-\n(?=[a-z])/g,'').replace(/([^.!?:\n])\n(?=[a-z(])/g,'$1 ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim()}
-async function pdf(f){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,P=[];
+async function pdf(f){await lazy('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const d=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,P=[];
 for(let p=1;p<=d.numPages;p++){const c=await(await d.getPage(p)).getTextContent();let y=null,l='';const L=[];for(const it of c.items){const yy=it.transform[5];if(y!==null&&Math.abs(yy-y)>3){L.push(l);l=''}l+=it.str;y=yy}L.push(l);P.push(L.map(x=>x.trim()).filter(Boolean))}return P}
 function strip(P){if(!$('rh').checked||P.length<4)return P;const c={},k=x=>x.replace(/\d+/g,'#');P.forEach(L=>new Set(L.map(k)).forEach(z=>c[z]=(c[z]||0)+1));return P.map(L=>L.filter(x=>!(c[k(x)]>=P.length*0.4&&x.length<70)&&!/^\d+$/.test(x)))}
 function h2t(h){const d=new DOMParser().parseFromString(h,'text/html');d.querySelectorAll('script,style,noscript,nav,footer,header,aside,form,iframe,svg,[role=navigation]').forEach(e=>e.remove());const r=d.querySelector('article,main,[role=main]')||d.body;
@@ -24,7 +24,7 @@ const w=n=>{if(n.nodeType==3)return n.textContent.replace(/\s+/g,' ');if(n.nodeT
 return((d.title?'# '+d.title+'\n\n':'')+w(r)).replace(/[ \t]+\n/g,'\n').replace(/\n{3,}/g,'\n\n').trim()}
 function show(t,n,x){TXT=t;$('dx').value=t;$('sc').textContent=t.length.toLocaleString();$('se').textContent=est(t).toLocaleString();$('dn').textContent=t.trim()?n+(x||''):'No text found. A scanned PDF has no text layer and needs OCR, which this tool does not include.'}
 function draw(){if(!PG)return;const S=strip(PG),rm=PG.flat().length-S.flat().length;show(rf(S.map(L=>L.join('\n')).join('\n\n')),FN,rm?' · removed '+rm+' repeated header, footer or page-number lines':'')}
-$('df').onchange=async e=>{const f=e.target.files[0];if(!f)return;FN=f.name;PG=null;$('dn').textContent='Reading…';try{if(/\.pdf$/i.test(f.name)){if(!window.pdfjsLib)throw Error('PDF engine failed to load');PG=await pdf(f);draw()}else if(/\.html?$/i.test(f.name))show(h2t(await f.text()),f.name);else show(await f.text(),f.name)}catch(x){$('dn').textContent='Error: '+x.message}};
+$('df').onchange=async e=>{const f=e.target.files[0];if(!f)return;FN=f.name;PG=null;$('dn').textContent='Reading…';try{if(/\.pdf$/i.test(f.name)){PG=await pdf(f);draw()}else if(/\.html?$/i.test(f.name))show(h2t(await f.text()),f.name);else show(await f.text(),f.name)}catch(x){$('dn').textContent='Error: '+x.message}};
 $('rh').onchange=draw;function dph(){PG=null;show(h2t($('dh').value),'Pasted HTML')}
 function cp(){navigator.clipboard&&navigator.clipboard.writeText(TXT).then(()=>{$('dn').textContent='Copied.'})}
 function dl(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([TXT],{type:'text/plain'}));a.download='clean.txt';a.click()}

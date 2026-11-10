@@ -12,3 +12,5 @@ textarea{min-height:150px;font:13px ui-monospace,Menlo,Consolas,monospace}input[
 .note{color:var(--mu);font-size:12px;margin-top:10px}.ok{color:#4ade80}.er{color:#f87171}
 .about h2{font-size:20px;margin:30px 0 6px;color:var(--ac2)}.about p,.about li{color:#b6c3dc}
 details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{color:#b6c3dc;margin:8px 0 0}
+.tabs{display:flex;gap:4px;border:1px solid var(--bd);border-radius:999px;padding:3px;width:max-content;max-width:100%;margin-bottom:6px}.tabs .tb{font:inherit;cursor:pointer;border:0;background:none;color:var(--mu);padding:8px 14px;border-radius:999px}.tabs .tb.on{background:var(--ac);color:#fff}
+select[size]{width:100%}input[type=search]{-webkit-appearance:none;appearance:none}
