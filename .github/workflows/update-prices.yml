@@ -21,8 +21,9 @@ jobs:
       - run: node scripts/update-prices.mjs
         env:
           FORCE: ${{ inputs.force }}
+      - run: node scripts/build.mjs
       - run: |
           git config user.name "price-bot"
           git config user.email "price-bot@users.noreply.github.com"
-          git add prices.json
+          git add -A -- prices.json '*.html' '*.txt' sitemap.xml .htaccess scripts/lastmod.json
           git diff --cached --quiet || (git commit -m "Update prices $(date -u +%F)" && git push)
