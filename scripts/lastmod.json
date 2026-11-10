@@ -24,7 +24,7 @@
   "d": "2026-11-10"
  },
  "/model-prices": {
-  "h": "4e45ae4b4a0cac33da9a0d14e43f7dcd490868c8",
+  "h": "de6598103c0d54e4e29ef556c112b46c09facefb",
   "d": "2026-11-10"
  },
  "/pdf-to-text": {
@@ -92,11 +92,11 @@
   "d": "2026-11-10"
  },
  "/claude-api-pricing": {
-  "h": "c2013bb87cf155b17fed9f25be5a1a9851e494b2",
+  "h": "3e1f896151aa6b186c53989a7f580dce71a14c81",
   "d": "2026-11-10"
  },
  "/gemini-api-pricing": {
-  "h": "66b5ac41d8e90a3688835a8c82d95a9f3ae4b57d",
+  "h": "46277b5fb21e06ecf65d82485b09bf8e6ae7d530",
   "d": "2026-11-10"
  },
  "/mistral-api-pricing": {

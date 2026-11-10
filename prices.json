@@ -1,7 +1,7 @@
 {
  "updated": "2026-11-10",
  "source": "LiteLLM community price list",
- "count": 205,
+ "count": 207,
  "models": [
   {"provider":"Anthropic","name":"claude-fable-5","in":10,"out":50,"ctx":1000,"cr":1},
   {"provider":"Anthropic","name":"claude-fable-5-1","in":10,"out":50,"ctx":1000,"cr":0.25},
@@ -10,6 +10,7 @@
   {"provider":"Anthropic","name":"claude-haiku-5-5","in":0.1,"out":0.5,"ctx":1000,"cr":0.01},
   {"provider":"Anthropic","name":"claude-mythos-5","in":10,"out":50,"ctx":1000,"cr":1},
   {"provider":"Anthropic","name":"claude-mythos-5-1","in":10,"out":50,"ctx":1000,"cr":0.25},
+  {"provider":"Anthropic","name":"claude-mythos-5-2","in":8,"out":40,"ctx":1000,"cr":0.2},
   {"provider":"Anthropic","name":"claude-opus-4-5","in":5,"out":25,"ctx":200,"cr":0.5},
   {"provider":"Anthropic","name":"claude-opus-4-6","in":5,"out":25,"ctx":1000,"cr":0.5},
   {"provider":"Anthropic","name":"claude-opus-4-7","in":5,"out":25,"ctx":1000,"cr":0.5},
@@ -49,6 +50,7 @@
   {"provider":"Google","name":"gemini-3.7-flash","in":0.75,"out":3.75,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-3.8-flash","in":0.75,"out":3.75,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-4-argon","in":2,"out":10,"ctx":1049,"cr":0.1},
+  {"provider":"Google","name":"gemini-4-carbon","in":2,"out":10,"ctx":1049,"cr":0.1},
   {"provider":"Google","name":"gemini-exp-1206","in":0.3,"out":2.5,"ctx":1049,"cr":0.03},
   {"provider":"Google","name":"gemini-flash-latest","in":0.75,"out":3.75,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-flash-lite-latest","in":0.3,"out":2.5,"ctx":1049,"cr":0.03},
