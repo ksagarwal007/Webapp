@@ -1,10 +1,11 @@
 {
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "source": "LiteLLM community price list",
- "count": 204,
+ "count": 205,
  "models": [
   {"provider":"Anthropic","name":"claude-fable-5","in":10,"out":50,"ctx":1000,"cr":1},
   {"provider":"Anthropic","name":"claude-fable-5-1","in":10,"out":50,"ctx":1000,"cr":0.25},
+  {"provider":"Anthropic","name":"claude-fable-5-2","in":8,"out":40,"ctx":1000,"cr":0.2},
   {"provider":"Anthropic","name":"claude-haiku-4-5","in":1,"out":5,"ctx":200,"cr":0.1},
   {"provider":"Anthropic","name":"claude-haiku-5-5","in":0.1,"out":0.5,"ctx":1000,"cr":0.01},
   {"provider":"Anthropic","name":"claude-mythos-5","in":10,"out":50,"ctx":1000,"cr":1},
