@@ -29,6 +29,10 @@ const models = PR && Array.isArray(PR.models) ? PR.models.map((m) => ({ p: m.pro
 const provNames = new Set(models.map((m) => m.p));
 const providers = (cfg.providers || []).filter((p) => provNames.has(p.name));
 const glossary = JSON.parse(rd("src/glossary.json"));
+const tips = JSON.parse(rd("src/tips.json"));
+for (const t of tips) { if (!glossary.some((g) => g.id === t.g)) throw new Error("tips.json: unknown glossary id " + t.g); new RegExp(t.m, "i"); }
+wr("assets/tips.js", "window.TIPS=" + JSON.stringify(tips.map((t) => ({ m: t.m, t: t.t, g: t.g, x: t.x, y: t.y || "" }))) + ";\n");
+const tipsHash = sha(rd("assets/tips.js")).slice(0, 8);
 
 const hrefFor = (s) => {
   const t = T.find((x) => x.slug === s); if (t) return t.href;
@@ -65,14 +69,13 @@ const analyticsHead = !AN.provider || !AN.id && AN.provider !== "plausible" ? ""
   AN.provider === "cloudflare" ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(AN.id)}"}'></script>` : "";
 const adsHead = adsOn ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${esc(ADS.client)}" crossorigin="anonymous"></script>` : "";
 
-const glossJson = JSON.stringify(glossary.filter((g) => g.match).map((g) => ({ id: g.id, term: g.term, match: g.match, short: g.short })));
 const shared = (s) => s
   .replaceAll("{{LOGO_SVG}}", () => logo).replaceAll("{{LOGO_JSON}}", () => JSON.stringify(logoIn)).replaceAll("{{SITE_HTML}}", () => siteHtml)
   .replaceAll("{{TAGLINE}}", () => esc(S.tagline)).replaceAll("{{SITE_DESC}}", () => esc(S.description || S.tagline))
   .replaceAll("{{SITE_JSON}}", () => JSON.stringify(S.name)).replaceAll("{{SITE_URL_JSON}}", () => JSON.stringify(S.url || ""))
   .replaceAll("{{EMAIL}}", () => esc(S.email || "")).replaceAll("{{SITE}}", () => esc(S.name))
   .replaceAll("{{MENU}}", () => menu).replaceAll("{{YEAR}}", () => new Date().getFullYear())
-  .replaceAll("{{GLOSSARY_JSON}}", () => glossJson.replace(/<\//g, "<\\/")).replaceAll("{{GLOSSARY_URL_JSON}}", () => JSON.stringify(U("glossary")))
+  .replaceAll("{{TIPS_URL}}", () => "/assets/tips.js?v=" + tipsHash).replaceAll("{{GLOSSARY_URL_JSON}}", () => JSON.stringify(U("glossary")))
   .replaceAll("{{AD_INIT}}", () => adInit).replaceAll("{{EXPORTS_URL}}", () => "/assets/exports.js?v=" + exportsHash)
   .replaceAll("{{TODAY_NICE}}", () => nice(today)).replaceAll("{{ANALYTICS_NOTE}}", () => esc(anNote)).replaceAll("{{ADS_NOTE}}", () => esc(adsNote))
   .replaceAll("{{PRICES_DATE}}", () => (PR && PR.updated) || "recently");
@@ -138,7 +141,7 @@ function render(h, o) {
     h = h.replace(/<main/, () => html + "<main");
     if (origin) o.ld = (o.ld || []).concat({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: cr.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c[0], item: origin + c[1] })) });
   }
-  let meta = '<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#05070d"><meta property="og:type" content="' + (o.ogType || "website") + '"><meta property="og:site_name" content="' + esc(S.name) + '"><meta property="og:title" content="' + title + '"><meta property="og:description" content="' + desc + '"><meta name="twitter:card" content="summary_large_image">';
+  let meta = '<script>try{var t=localStorage.getItem("aub-theme");if(t==="light")document.documentElement.dataset.theme="light"}catch(e){}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#05070d"><meta property="og:type" content="' + (o.ogType || "website") + '"><meta property="og:site_name" content="' + esc(S.name) + '"><meta property="og:title" content="' + title + '"><meta property="og:description" content="' + desc + '"><meta name="twitter:card" content="summary_large_image">';
   if (o.noindex) meta += '<meta name="robots" content="noindex">';
   else if (origin) meta += '<link rel="canonical" href="' + url + '"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + origin + '/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">';
   if (toks.length) meta += "<script>window.TOKLIBS=" + JSON.stringify(toks) + ";</script>";
@@ -153,6 +156,23 @@ function render(h, o) {
 const outputs = []; // [file, html, urlPath, inSitemap]
 const emit = (file, html, p, inMap = true) => { wr(file, html); outputs.push([file, html, p, inMap]); console.log("built " + file); };
 
+// ---------- Price highlights (static, for readers and search engines) ----------
+function highlights() {
+  if (!models.length) return "";
+  const paid = models.filter((m) => m.i > 0 && m.o > 0);
+  const tbl = (title, note, rows, cols) => `<div class="card"><h2 style="margin:0 0 4px;font-size:18px">${title}</h2><p class="note" style="margin:0 0 8px">${note}</p><div class="ov"><table><thead><tr>${cols.map((c) => `<th>${c}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div></div>`;
+  const r = (m) => `<tr><td>${esc(m.n)}</td><td>${esc(m.p)}</td><td>${m.i}</td><td>${m.o}</td><td>${m.c}</td></tr>`;
+  const cols = ["Model", "Provider", "Input $/1M", "Output $/1M", "Context (K)"];
+  const cheapIn = paid.slice().sort((a, b) => a.i - b.i || a.o - b.o).slice(0, 8).map(r);
+  const cheapOut = paid.slice().sort((a, b) => a.o - b.o || a.i - b.i).slice(0, 8).map(r);
+  const big = models.slice().sort((a, b) => b.c - a.c || a.i - b.i).slice(0, 8).map(r);
+  const per = providers.map((pv) => paid.filter((m) => m.p === pv.name).sort((a, b) => a.i - b.i)[0]).filter(Boolean).map(r);
+  return tbl("Cheapest Models by Input Price", "Models with the lowest price per million input tokens. Zero-priced entries are left out.", cheapIn, cols) +
+    tbl("Cheapest Models by Output Price", "Output tokens cost more than input, so this ranking matters for chatbots and writing tasks.", cheapOut, cols) +
+    tbl("Largest Context Windows", "The models that can take the most text in a single request.", big, cols) +
+    (per.length ? tbl("Cheapest Model from Each Major Provider", `By input price. See each provider's full list: ${providers.map((x) => `<a href="${U(x.slug)}">${esc(x.label || x.name)}</a>`).join(", ")}.`, per, cols) : "");
+}
+
 // ---------- Pages ----------
 const org = { "@type": "Organization", name: S.name, url: origin + "/", logo: origin + "/logo.svg" };
 for (const f of fs.readdirSync("src/pages").filter((f) => f.endsWith(".html"))) {
@@ -161,6 +181,8 @@ for (const f of fs.readdirSync("src/pages").filter((f) => f.endsWith(".html"))) 
   const isHome = name === "index", p = isHome ? "/" : U(name), ld = [];
   const rows = models.map((x) => `<tr><td data-label="Compare"><input type="checkbox" data-k="${esc(x.p + "|" + x.n)}" aria-label="Compare ${esc(x.n)}"></td><td data-label="Provider">${esc(x.p)}</td><td data-label="Model">${esc(x.n)}</td><td data-label="Input $/1M">${x.i}</td><td data-label="Output $/1M">${x.o}</td><td data-label="Context (K)">${x.c}</td></tr>`).join("");
   h = h.replaceAll("{{PRICE_ROWS}}", () => rows || '<tr><td colspan="6">Prices load in a moment.</td></tr>')
+    .replaceAll("{{PRICES_META}}", () => models.length ? `Last updated ${PR.updated} · ${models.length} models from ${provNames.size} providers · refreshed daily` : "Prices are refreshed daily from an open-source catalog.")
+    .replaceAll("{{PRICE_HIGHLIGHTS}}", () => highlights())
     .replaceAll("{{PRICE_COUNT}}", () => models.length ? `${models.length} of ${models.length} models` : "")
     .replaceAll("{{PROVIDER_LINKS}}", () => providers.map((x) => `<a href="${U(x.slug)}">${esc(x.name)} API Pricing</a>`).join(" &middot; "));
   if (isHome) ld.push({ "@context": "https://schema.org", "@type": "WebSite", name: S.name, url: origin + "/", description: S.description }, { "@context": "https://schema.org", ...org });

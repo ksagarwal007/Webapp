@@ -3,7 +3,7 @@
 {{HEADER}}
 <main><h1>Prompt Template Builder</h1><p class="lead">Write reusable prompts with variables, save them, and share them as a link. Everything stays in your browser.</p>
 <div class="card"><div class="g"><div><label>Ready-made templates</label><select id="plib"></select></div><div><label>My saved templates</label><select id="psv"></select></div><div><label>Template name</label><input id="pn" placeholder="e.g. Weekly report"></div></div>
-<button class="b" onclick="psv_()">Save</button><button class="b s" onclick="pdl()">Delete</button><button class="b s" onclick="psh()">Copy Share Link</button><button class="b s" onclick="pex()">Export All</button><label class="b s" style="display:inline-block;cursor:pointer;margin:12px 8px 0 0;color:#fff">Import<input type="file" id="pim" accept=".json" hidden></label><p class="note" id="pmsg"></p>
+<button class="b" onclick="psv_()">Save</button><button class="b s" onclick="pdl()">Delete</button><button class="b s" onclick="psh()">Copy Share Link</button><button class="b s" onclick="pex()">Export All</button><label class="b s" style="display:inline-block;cursor:pointer;margin:12px 8px 0 0">Import<input type="file" id="pim" accept=".json" hidden></label><p class="note" id="pmsg"></p>
 <label>Template (write {{variables}} where the details go)</label><textarea id="pt">Act as a {{role}}. Summarize the following for {{audience}} in {{length}} words:
 
 {{text}}</textarea><div class="g" id="pv"></div><label>Final prompt</label><textarea id="po" readonly></textarea><button class="b" onclick="cp()">Copy Prompt</button></div>

@@ -1,114 +1,86 @@
 {
  "/chat-export": {
-  "h": "a1559aaa5841933e951cb0f1b4c11e11f5dc2231",
+  "h": "b80275e27836f580844f0cdf08c76d584bfa557f",
   "d": "2026-11-10"
  },
  "/chunker": {
-  "h": "22151add71554697c82c060ba4a2ab6cbf9001f4",
+  "h": "2e82c526f3b9ede5d51ca482aa3ec0abc826fe9d",
   "d": "2026-11-10"
  },
  "/cost-forecaster": {
-  "h": "d430629b07dd038831e3e9fc5692ba230b88f350",
+  "h": "a2b31d11afb27ced8793788af055cc7f31de9327",
   "d": "2026-11-10"
  },
  "/how-it-works": {
-  "h": "28742d09bc655216c3a0a97a937ebe6dd1b512c6",
+  "h": "c411806215f72ba0822e027eea22c3f019dc5faf",
   "d": "2026-11-10"
  },
  "/": {
-  "h": "b3b4230a25f2dba940ecf7b6c80c00c07ae74a82",
+  "h": "8adbb0cf42f05939a948a9cd80e697b638f59761",
   "d": "2026-11-10"
  },
  "/json-validator": {
-  "h": "d68966c58abca7ad5893b0670fcebf52ecc9a073",
+  "h": "7561b9dea83502c325357d0dd4a44be7d94ef9c8",
   "d": "2026-11-10"
  },
  "/model-prices": {
-  "h": "4b2f8bcec1cc73584a1825f8323edc201798f303",
+  "h": "8c3732d260ffd552ab9924ac584dcd775fafe025",
   "d": "2026-11-10"
  },
  "/pdf-to-text": {
-  "h": "4e2969d00e0df7475eec4b4a92cabc81e92d01bf",
+  "h": "c4ca66830eaf5c9618138d755d925449e845ca27",
   "d": "2026-11-10"
  },
  "/privacy": {
-  "h": "0d08559b01c9748ae2043b003e66aeb7e0bfce3b",
+  "h": "065b670c8f8c28629c6360104a865fadf37b2b9e",
   "d": "2026-11-10"
  },
  "/prompt-builder": {
-  "h": "6724de4448f1d88513683babf9a9d179af88da9a",
+  "h": "6764bb8ef5f6689c009a617ad59596bfad6201f6",
   "d": "2026-11-10"
  },
  "/prompt-token-optimizer": {
-  "h": "68146d120e654f0f0abc0754de07ac584cbe1d69",
-  "d": "2026-11-10"
- },
- "/prompt-trimmer": {
-  "h": "28222c1dd8359c2d8bd5ef18e1f88dff7bcb7157",
+  "h": "018d3340417c6ba3b80141c4005d643181cdef4d",
   "d": "2026-11-10"
  },
  "/terms": {
-  "h": "060c8f19d1bd0ce5d5091bd12464a4e39fbda7cc",
+  "h": "141399178a9284c1a73ab25dc24284243eca7dd7",
   "d": "2026-11-10"
  },
  "/text-cleaner": {
-  "h": "3bb6acc08b8a061085ac7833cc5b92cb79031108",
+  "h": "4a7e3480d6bf3a6152c83e81b1be18361dbdd5db",
   "d": "2026-11-10"
  },
  "/token-counter": {
-  "h": "9d1ca397572366b1a710d9739d975d173ca5ba08",
+  "h": "c15d38bfc43795cc6528d3f8dd448bd064b1ef42",
   "d": "2026-11-10"
  },
  "/glossary": {
-  "h": "01d8add3a60834bf1fe38b96559e976160d46ca7",
+  "h": "0bb5201aa26c4eb21921843832f8c6d64ae2a935",
   "d": "2026-11-10"
  },
  "/blog/": {
-  "h": "52a08cb80a2a6b6d17e4cfb30e8852503b3e05e4",
+  "h": "1af98fc7f93a0b75a7f00f83e4f3be86eb71953d",
   "d": "2026-11-10"
  },
  "/blog/how-many-tokens-is-my-text": {
-  "h": "6375951d4c42b36d7e34486f6994908324e120cf",
+  "h": "c2166d30799e6cafe9242b527dd6b05dc7ba0ac4",
   "d": "2026-11-10"
  },
  "/blog/estimate-monthly-cost-of-an-llm-chatbot": {
-  "h": "29642487d48599bcf62fc44642ee5622d6c3fa1f",
+  "h": "62b009ed68a081aaf5d76c0deb67804a3151f5c1",
   "d": "2026-11-10"
  },
  "/blog/cut-your-llm-bill": {
-  "h": "13b1e66a1eea1128e46a2e4a471fa5e5e079d21b",
+  "h": "b1f752ae48a6894ef14aa098c2a37a5be262448c",
   "d": "2026-11-10"
  },
  "/blog/context-windows-explained": {
-  "h": "e136e7d630c1062ef2c90804f42a1bc28a323234",
+  "h": "167c3646bd67403a2e9b7aa1fc7f2c2ffc6e2fb9",
   "d": "2026-11-10"
  },
  "/blog/compare-llm-api-prices": {
-  "h": "7f6501cb425f28796c9b8e66351312475ff45aad",
-  "d": "2026-11-10"
- },
- "/openai-api-pricing": {
-  "h": "66588ef76cb7d303ff80fd143ea405fea2beeae1",
-  "d": "2026-11-10"
- },
- "/claude-api-pricing": {
-  "h": "def64fa9eb72cf83f5953f192a7b2203c847d8e4",
-  "d": "2026-11-10"
- },
- "/gemini-api-pricing": {
-  "h": "4d91225ef3980298d345aa78f81f254c9b48eb6f",
-  "d": "2026-11-10"
- },
- "/mistral-api-pricing": {
-  "h": "4ec5545fcefada20a6a78d45d5544774377f345e",
-  "d": "2026-11-10"
- },
- "/deepseek-api-pricing": {
-  "h": "2c90511364d276fc7644cf65bb60cf6ed73abab2",
-  "d": "2026-11-10"
- },
- "/grok-api-pricing": {
-  "h": "7036921aae8a78d35b63fab727591a5537e82224",
+  "h": "77b29cabfcd5d003f7db018538b445a1caa83a6d",
   "d": "2026-11-10"
  }
 }

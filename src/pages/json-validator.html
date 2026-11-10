@@ -27,7 +27,7 @@ if(ty=='number'){if(s.minimum!=null&&v<s.minimum)e.push(at+': below minimum '+s.
 if(ty=='string'&&s.minLength&&v.length<s.minLength)e.push(at+': shorter than '+s.minLength+' characters');
 if(ty=='object'){(s.required||[]).forEach(k=>{if(!(k in v))e.push(at+': missing "'+k+'"')});for(const k in s.properties||{})if(k in v)chk(v[k],s.properties[k],p+'.'+k,e)}
 if(ty=='array'&&s.items)v.forEach((x,i)=>chk(x,s.items,p+'['+i+']',e))}
-function say(t,ok){$('jo').style.color=ok?'#4ade80':'#f87171';$('jo').textContent=t}
+function say(t,ok){$('jo').style.color=ok?'var(--ok)':'var(--er)';$('jo').textContent=t}
 function vj(pre){pre=typeof pre=='string'?pre:'';const src=$('ji').value;let v;try{v=JSON.parse(src)}catch(x){say(pre+'Invalid JSON: '+perr(src,x),false);return}
 const sc=$('jsc').value.trim();if(!sc){say(pre+'Valid JSON.',true);return}
 let s;try{s=JSON.parse(sc)}catch(x){say(pre+'The schema is not valid JSON: '+x.message,false);return}

@@ -23,7 +23,10 @@
 Add `src/blog/your-slug.md` starting with a front-matter block (`title`, `description`, `date` as YYYY-MM-DD, optional `tools: token-counter, cost-forecaster`). Write in simple Markdown: `##` headings, lists, tables, `**bold**`. Link to a tool with `[Token Counter](tool:token-counter)`, to a page with `[Glossary](page:glossary)` and to another article with `[text](post:other-slug)`. Push to GitHub and the build adds it to the blog, the home page, the sitemap and the article's structured data.
 
 ## Tooltips and glossary
-`src/glossary.json` drives both the Glossary page and the small "?" help icons. An entry with a `match` pattern (a regular expression tested against label and column-heading text) gets an icon wherever a label matches; an entry with an empty `match` appears only in the Glossary.
+`src/glossary.json` holds the Glossary page. `src/tips.json` holds the text of the small "?" help popovers: `m` is a regular expression tested against label and column-heading text (first match wins), `t` the title, `x` the explanation, `y` an optional "Typical" line and `g` the Glossary entry it links to. Edit the wording there and rebuild.
+
+## Light and dark theme
+Dark is the default. The header button switches to light and remembers the choice in the visitor's browser. All colours are variables defined at the top of `src/partials/shared.css`. Share images, PDF and Excel exports keep their own fixed look.
 
 ## Ads (off by default)
 In `tools.json`, `site.ads` has `enabled`, `client` (your `ca-pub-...` id) and `slots`. While `enabled` is false nothing ad-related is added. When you switch it on, the build adds the AdSense script, reserved ad containers on tool pages, articles and list pages, and writes `ads.txt`. Before enabling ads for visitors in the EU, UK or Switzerland you need a consent banner (the free Google "Privacy & messaging" tool in your AdSense account does this). Update the Privacy page wording if you add other ad networks. `site.analytics` (`provider`: `plausible`, `ga4` or `cloudflare`, plus `id`) switches on analytics the same way.

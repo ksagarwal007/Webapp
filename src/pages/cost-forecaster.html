@@ -2,7 +2,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>{{TITLE}}</title><meta name="description" content="{{DESC}}">{{SHARED_CSS}}
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
-:root{--bg:#05070d;--sf:#0b1220;--bd:#1b2a4a;--tx:#e6edf9;--mu:#8a9bbd;--ac:#3b82f6;--ac2:#60a5fa;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
 header{max-width:900px;margin:auto;padding:22px 20px 6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -21,7 +21,7 @@ input[type=range]{padding:0;accent-color:var(--ac)}textarea{min-height:80px;font
 .cbx{position:relative}#ml{display:none;position:absolute;left:0;right:0;top:100%;z-index:5;max-height:280px;overflow:auto;background:var(--sf);border:1px solid var(--ac);border-radius:8px;margin-top:4px}
 .gh{padding:6px 10px;color:var(--ac2);font-size:11px;letter-spacing:.08em;text-transform:uppercase}.op{padding:7px 10px;cursor:pointer}.op:hover{background:var(--bd)}
 .big{font-size:40px;font-weight:700}.big small{font-size:16px;font-weight:400}
-.badge{display:inline-block;border:1px solid var(--ac2);border-radius:999px;padding:2px 10px;font-size:12px;margin:0 6px 4px 0}.badge.w{border-color:#f87171;color:#f87171}
+.badge{display:inline-block;border:1px solid var(--ac2);border-radius:999px;padding:2px 10px;font-size:12px;margin:0 6px 4px 0}.badge.w{border-color:var(--er);color:var(--er)}
 .sr{display:grid;grid-template-columns:minmax(120px,190px) 1fr minmax(100px,170px);gap:10px;align-items:center;margin:7px 0;font-size:13px}.sr b{text-align:right}
 .bar{position:relative;background:var(--bg);border-radius:6px;height:10px}.bar i{display:block;height:100%;border-radius:6px;background:var(--ac)}.bar u{position:absolute;top:-3px;bottom:-3px;border-left:1px dashed var(--tx)}
 @media(max-width:560px){.sr{grid-template-columns:1fr}.sr b{text-align:left}}
@@ -29,7 +29,7 @@ input[type=range]{padding:0;accent-color:var(--ac)}textarea{min-height:80px;font
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.stats div{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px;text-align:center;color:var(--mu);font-size:13px}.stats b{display:block;font-size:22px;color:var(--ac2)}
 .sec{text-align:center;margin:40px 0 14px;font-size:24px}.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.fg div{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px}.fg p{margin:6px 0 0;color:var(--mu);font-size:13px}
 .cta{margin:40px 0 10px;text-align:center;padding:30px 18px;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9)}.cta h2{margin:0 0 6px}.cta p{margin:0 0 14px}
-h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.btnrow .b{margin:0}#c1 svg,#c2 svg{display:block;width:100%;height:auto}.badge:empty{display:none}#spv svg{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd);display:block}.about h2{font-size:20px;margin:30px 0 6px;color:var(--ac2)}.about p{color:#b6c3dc}details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{margin:8px 0 0}
+h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.btnrow .b{margin:0}#c1 svg,#c2 svg{display:block;width:100%;height:auto}.badge:empty{display:none}#spv svg{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd);display:block}.about h2{font-size:20px;margin:30px 0 6px;color:var(--ac2)}.about p{color:var(--tx2)}details.q{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin:8px 0}details.q summary{cursor:pointer;font-weight:600}details.q p{margin:8px 0 0}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/gpt-tokenizer@2.8.1/dist/o200k_base.js"></script></head><body>
 {{HEADER}}
@@ -38,7 +38,7 @@ h1{font-size:30px;margin:28px 0 6px}.lead{color:var(--mu);margin:0 0 16px}.btnro
 <div class="card" id="tool"><div class="stp"><span><i>1</i>Pick a workload &amp; model</span><span><i>2</i>Describe your usage</span><span><i>3</i>Read your forecast</span></div><p class="mu">New here? Start from an example:</p><div id="ex"></div></div>
 <div class="row"><div id="tabs"></div></div>
 <div class="card"><label style="margin-top:0">Model</label><div class="cbx"><input id="mq" autocomplete="off"><div id="ml"></div></div><div id="f"></div></div>
-<div class="card"><h3>Cost Forecast</h3><div class="big"><span id="tot">$0</span> <small>/ month</small></div><span class="badge" id="bd"></span><span class="badge w" id="sb"></span><p class="mu" id="sub"></p><p id="s0" style="margin:0 0 8px;color:#4ade80"></p>
+<div class="card"><h3>Cost Forecast</h3><div class="big"><span id="tot">$0</span> <small>/ month</small></div><span class="badge" id="bd"></span><span class="badge w" id="sb"></span><p class="mu" id="sub"></p><p id="s0" style="margin:0 0 8px;color:var(--ok)"></p>
 <h4>Cost Breakdown</h4><div id="bk"></div>
 <h4>Sensitivity <small>how each input (±20%) moves your monthly cost</small></h4><div id="sn"></div>
 <h4>What If <small>drag to watch the monthly cost respond</small></h4><div id="wi"></div><p id="wr"></p>
@@ -125,7 +125,7 @@ const b=lc(ks,[{y:y2,c:o.a}],{gr:o.gr,tx:o.tx,w:o.w,xt:lab('T'),yt:'Monthly cost
 const wn=kwx<1?'At these sizes, history already exceeds the '+cap.toLocaleString('en-US')+'-token window from the first turn.':isFinite(kwx)?'At these sizes, history fills the '+cap.toLocaleString('en-US')+'-token window after about '+kwx.toLocaleString('en-US')+' turns'+(kw&&kw<=hi?'. The red dashed line marks that point.':', which is beyond the range shown, so no red line is drawn.'):'';
 const lg=`<div style='font-size:12px;color:${o.tx}'><span style='color:${o.b}'>\u25cf</span> No caching &nbsp; <span style='color:${o.a}'>\u25cf</span> With caching (modeled warm share)</div>`;
 return[lg+a,b,'Assumes evenly spread traffic, a 5-minute cache lifetime and a 25% surcharge on cold cache writes. The headline forecast assumes a warm cache, the high-volume limit. Dashed line: your current volume.','Monthly cost at different conversation lengths. It rises faster than linearly while history builds, then roughly linearly once history fills the window and older turns are dropped. Light dashed line: your setting. '+wn]}
-function drawCharts(){const w=Math.max(300,Math.min(1000,Math.round($('c1').clientWidth||600))),c=chs({gr:'#1b2a4a',tx:'#8a9bbd',a:'#60a5fa',b:'#f87171',w});$('c1').innerHTML=c[0];$('c2').innerHTML=c[1];$('c1n').textContent=c[2];$('c2n').textContent=c[3]}
+function drawCharts(){const w=Math.max(300,Math.min(1000,Math.round($('c1').clientWidth||600))),cv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(),c=chs({gr:cv('--bd'),tx:cv('--mu'),a:cv('--ac2'),b:cv('--er'),w});$('c1').innerHTML=c[0];$('c2').innerHTML=c[1];$('c1n').textContent=c[2];$('c2n').textContent=c[3]}
 const HW=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
 const HB=[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
 const tw=(s,z,b)=>{let w=0;for(const ch of String(s)){const c=ch.charCodeAt(0);w+=c>=32&&c<=126?(b?HB:HW)[c-32]:556}return w*z/1000};
@@ -259,7 +259,7 @@ async function dlImg(){try{const b=await png(),a=document.createElement('a');a.h
 async function shareImg(){try{const b=await png(),fl=new File([b],'llm-cost-forecast.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[fl]})){await navigator.share({files:[fl],title:'LLM cost forecast',text:'Monthly LLM cost forecast from '+SITE});return}await dlImg()}catch(e){if(e&&e.name=='AbortError')return;$('smsg').textContent='Could not share: '+(e.message||e)}}
 async function cpImg(){try{await navigator.clipboard.write([new ClipboardItem({'image/png':png()})]);$('smsg').textContent='Image copied.'}catch(e){$('smsg').textContent='Copy is not supported here. Use Download PNG.'}}
 $('shr').ontoggle=()=>{if($('shr').open)spv()};['ssz','sas'].forEach(i=>$(i).onchange=spv);if(window.ClipboardItem)$('cpi').style.display='';
-let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(drawCharts,200)});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(drawCharts,200)});addEventListener('themechange',()=>{try{drawCharts()}catch(e){}});
 function ui(){sm();rf();calc()}
 lh();ui();
 fetch('/prices.json').then(r=>r.json()).then(j=>{M=j.models.map(m=>[m.provider||'Other',m.name,m.in,m.out,m.ctx||128]).sort((a,b)=>a[0]<b[0]?-1:a[0]>b[0]?1:a[1]<b[1]?-1:1);VF=j.updated;ui()}).catch(()=>{});
