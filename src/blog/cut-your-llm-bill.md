@@ -2,6 +2,8 @@
 title: Seven Ways to Cut Your LLM Bill
 description: Practical ways to reduce LLM API spend: shorter prompts, caching, cheaper models, history limits and batch pricing, with how to judge each trade-off.
 date: 2026-11-10
+image: /assets/blog/cut-your-llm-bill-hero.jpg
+imageAlt: Bars falling to show a lower LLM bill
 tools: prompt-token-optimizer, cost-forecaster, model-prices
 ---
 Most LLM bills are driven by a few things: how many tokens you send, how many the model writes, and which model you use. These seven changes tackle each, in roughly the order worth trying.

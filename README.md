@@ -22,6 +22,12 @@
 ## Blog
 Add `src/blog/your-slug.md` starting with a front-matter block (`title`, `description`, `date` as YYYY-MM-DD, optional `tools: token-counter, cost-forecaster`). Write in simple Markdown: `##` headings, lists, tables, `**bold**`. Link to a tool with `[Token Counter](tool:token-counter)`, to a page with `[Glossary](page:glossary)` and to another article with `[text](post:other-slug)`. Push to GitHub and the build adds it to the blog, the home page, the sitemap and the article's structured data.
 
+Optional front matter for price articles:
+- `checked: YYYY-MM-DD` shows "Subscription prices checked <date>" under the headline. **This is the one line to edit each time you re-verify the prices by hand.** If the date is more than 30 days old (change with `stale: 45`), a "prices may be out of date" notice appears automatically on the next daily build.
+- `image: /assets/blog/hero.jpg` and `imageAlt:` set the hero image, the social preview image and the structured-data image. Use at least 1200 px wide for Google Discover.
+- A line `[[api-prices Anthropic]]` in the body inserts a table of that provider's newest models from `prices.json`, and the daily build keeps it current. The header then also shows "API prices updated <date>".
+- Images in the body: `![alt text](/assets/blog/file.jpg "Caption")`. Consecutive image lines become a side-by-side row.
+
 ## Tooltips and glossary
 `src/glossary.json` holds the Glossary page. `src/tips.json` holds the text of the small "?" help popovers: `m` is a regular expression tested against label and column-heading text (first match wins), `t` the title, `x` the explanation, `y` an optional "Typical" line and `g` the Glossary entry it links to. Edit the wording there and rebuild.
 

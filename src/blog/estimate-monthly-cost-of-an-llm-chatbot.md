@@ -2,6 +2,8 @@
 title: How to Estimate the Monthly Cost of an LLM Chatbot
 description: A step-by-step method for forecasting what a chatbot will cost each month, including why conversation history makes bills grow faster than expected.
 date: 2026-11-10
+image: /assets/blog/estimate-monthly-cost-of-an-llm-chatbot-hero.jpg
+imageAlt: Chat messages growing longer as a conversation continues
 tools: cost-forecaster, token-counter, model-prices
 ---
 A chatbot looks cheap per message, then the first invoice arrives and it is several times your estimate. The reason is almost always the same: the model has no memory, so every turn re-sends the whole conversation. Here is a method that accounts for it.

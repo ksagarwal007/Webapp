@@ -2,6 +2,8 @@
 title: How to Compare LLM API Prices Fairly
 description: Price per million tokens is only the start. Learn what else to compare across LLM providers: input vs output, context size, caching, batch discounts and real workload cost.
 date: 2026-11-10
+image: /assets/blog/compare-llm-api-prices-hero.jpg
+imageAlt: Comparing LLM API prices: input, output and context
 tools: model-prices, cost-forecaster, token-counter
 ---
 Comparing LLM prices sounds simple: find the cheapest number. In practice, two models with the same headline price can cost very different amounts for your workload. Here is how to compare fairly.

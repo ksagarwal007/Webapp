@@ -38,7 +38,7 @@ const hrefFor = (s) => {
   const t = T.find((x) => x.slug === s); if (t) return t.href;
   if (s === "home") return "/";
   if (s === "blog") return POSTDIR;
-  if (["glossary", "privacy", "terms", "how-it-works"].includes(s)) return U(s);
+  if (["glossary", "privacy", "terms", "how-it-works", "about"].includes(s)) return U(s);
   const pv = (cfg.providers || []).find((x) => x.slug === s); if (pv) return U(s);
   throw new Error("Unknown link target: " + s);
 };
@@ -90,18 +90,39 @@ const inline = (s) => esc(s)
     else if (u.startsWith("post:")) u = (clean ? POSTDIR + u.slice(5) : POSTDIR + u.slice(5) + ".html");
     return `<a href="${u}"${/^https?:/.test(u) ? ' rel="noopener"' : ""}>${t}</a>`;
   });
+const imgSize = (src) => { // read width and height from a local PNG or JPEG so the page does not jump while images load
+  try {
+    const f = fs.readFileSync("." + src.split("?")[0]);
+    if (f[0] === 0x89 && f[1] === 0x50) return [f.readUInt32BE(16), f.readUInt32BE(20)];
+    let i = 2; while (i < f.length) { if (f[i] !== 0xff) { i++; continue; } const k = f[i + 1]; if (k >= 0xc0 && k <= 0xcf && k !== 0xc4 && k !== 0xc8 && k !== 0xcc) return [f.readUInt16BE(i + 7), f.readUInt16BE(i + 5)]; i += 2 + f.readUInt16BE(i + 2); }
+  } catch { /* missing file: caught below */ }
+  throw new Error("Blog image not found or unreadable: " + src);
+};
+const verOf = (n) => (n.match(/\d+/g) || []).map(Number);
+const cmpVer = (a, b) => { for (let i = 0; i < Math.max(a.length, b.length); i++) { const d = (b[i] || 0) - (a[i] || 0); if (d) return d; } return 0; };
+// Latest model of each family for a provider, straight from prices.json (so it updates with the daily price job).
+function apiBlock(prov) {
+  const ms = models.filter((m) => m.p === prov); if (!ms.length) return "";
+  const fam = {}; for (const m of ms) { const k = m.n.replace(/[-\d.]+$/, "").replace(/-\d.*$/, ""); (fam[k] = fam[k] || []).push(m); }
+  const rows = Object.values(fam).map((a) => a.sort((x, y) => cmpVer(verOf(x.n), verOf(y.n)))[0]).sort((a, b) => b.i - a.i || (a.n < b.n ? -1 : 1));
+  return `<div class="ov"><table><thead><tr><th>Model</th><th>Input $/1M</th><th>Output $/1M</th><th>Context (K)</th></tr></thead><tbody>${rows.map((m) => `<tr><td>${esc(m.n)}</td><td>${m.i}</td><td>${m.o}</td><td>${m.c}</td></tr>`).join("")}</tbody></table></div><p class="note">Prices verified ${PR.updated} &middot; newest model in each ${esc(prov)} family &middot; <a href="${hrefFor("model-prices")}">compare all models</a>.</p>`;
+}
+const figure = (alt, src, cap) => { const [w, h] = imgSize(src); return `<figure><img src="${esc(src)}" alt="${esc(alt)}" width="${w}" height="${h}" loading="lazy" decoding="async">${cap ? `<figcaption>${inline(cap)}</figcaption>` : ""}</figure>`; };
 function md(src) {
   const out = [], L = src.replace(/\r/g, "").split("\n");
   for (let i = 0; i < L.length;) {
     const l = L[i];
     if (!l.trim()) { i++; continue; }
     let m;
-    if ((m = l.match(/^(#{2,3})\s+(.*)$/))) { const id = m[2].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); out.push(`<h${m[1].length} id="${id}">${inline(m[2])}</h${m[1].length}>`); i++; }
+    if (/^\[\[toc\]\]\s*$/.test(l)) { out.push("<!--toc-->"); i++; }
+    else if ((m = l.match(/^\[\[api-prices\s+([^\]]+)\]\]\s*$/))) { out.push(apiBlock(m[1].trim())); i++; }
+    else if (/^!\[[^\]]*\]\(/.test(l)) { const figs = []; while (i < L.length && (m = L[i].match(/^!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?\)\s*$/))) { figs.push(figure(m[1], m[2], m[3])); i++; } if (!figs.length) throw new Error("Bad image line: " + l); out.push(figs.length > 1 ? `<div class="shots">${figs.join("")}</div>` : figs[0]); }
+    else if ((m = l.match(/^(#{2,3})\s+(.*)$/))) { const id = m[2].toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); out.push(`<h${m[1].length} id="${id}">${inline(m[2])}</h${m[1].length}>`); i++; }
     else if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]); const cells = (r) => r.replace(/^\||\|$/g, "").split("|").map((c) => c.trim()); const head = cells(rows[0]), body = rows.slice(2).map(cells); out.push(`<div class="ov"><table><thead><tr>${head.map((c) => `<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>${body.map((r) => `<tr>${r.map((c) => `<td>${inline(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`); }
     else if (/^[-*]\s+/.test(l)) { const it = []; while (i < L.length && /^[-*]\s+/.test(L[i])) it.push(L[i++].replace(/^[-*]\s+/, "")); out.push(`<ul>${it.map((x) => `<li>${inline(x)}</li>`).join("")}</ul>`); }
     else if (/^\d+\.\s+/.test(l)) { const it = []; while (i < L.length && /^\d+\.\s+/.test(L[i])) it.push(L[i++].replace(/^\d+\.\s+/, "")); out.push(`<ol>${it.map((x) => `<li>${inline(x)}</li>`).join("")}</ol>`); }
     else if (/^>\s?/.test(l)) { const q = []; while (i < L.length && /^>\s?/.test(L[i])) q.push(L[i++].replace(/^>\s?/, "")); out.push(`<blockquote><p>${inline(q.join(" "))}</p></blockquote>`); }
-    else { const p = []; while (i < L.length && L[i].trim() && !/^(#{2,3}\s|\||[-*]\s|\d+\.\s|>)/.test(L[i])) p.push(L[i++]); out.push(`<p>${inline(p.join(" "))}</p>`); }
+    else { const p = []; while (i < L.length && L[i].trim() && !/^(#{2,3}\s|\||[-*]\s|\d+\.\s|>|!\[|\[\[api-prices)/.test(L[i])) p.push(L[i++]); out.push(`<p>${inline(p.join(" "))}</p>`); }
   }
   return out.join("\n");
 }
@@ -111,8 +132,16 @@ const posts = fs.existsSync("src/blog") ? fs.readdirSync("src/blog").filter((f) 
   const meta = {}; fm[1].split("\n").forEach((x) => { const k = x.indexOf(":"); if (k > 0) meta[x.slice(0, k).trim()] = x.slice(k + 1).trim(); });
   for (const k of ["title", "description", "date"]) if (!meta[k]) throw new Error(f + ": missing " + k);
   const slug = f.replace(/\.md$/, "");
-  return { slug, ...meta, tools: (meta.tools || "").split(",").map((x) => x.trim()).filter(Boolean), body: md(fm[2]), words: fm[2].split(/\s+/).length, path: clean ? POSTDIR + slug : POSTDIR + slug + ".html" };
+  if (meta.checked && !/^\d{4}-\d{2}-\d{2}$/.test(meta.checked)) throw new Error(f + ": checked must be YYYY-MM-DD");
+  return { slug, ...meta, hasApi: /^\[\[api-prices/m.test(fm[2]), tools: (meta.tools || "").split(",").map((x) => x.trim()).filter(Boolean), body: md(fm[2]).replace("<!--toc-->", () => { const hs = [...md(fm[2].replace(/^\[\[toc\]\].*$/m, "")).matchAll(/<h2 id="([^"]+)">(.*?)<\/h2>/g)]; return hs.length ? `<nav class="toc" aria-label="Contents"><b>In this guide</b><ul>${hs.map((h) => `<li><a href="#${h[1]}">${h[2]}</a></li>`).join("")}</ul></nav>` : ""; }), faq: faqOf(fm[2]), words: fm[2].split(/\s+/).length, path: clean ? POSTDIR + slug : POSTDIR + slug + ".html" };
 }).sort((a, b) => (a.date < b.date ? 1 : -1)) : [];
+function faqOf(src) { // "### Question" + answer paragraphs under a "## Frequently asked questions" heading -> FAQPage structured data
+  const i = src.search(/^## Frequently asked questions/m); if (i < 0) return [];
+  const sec = src.slice(i).split(/\n(?=## )/)[0], qs = [];
+  for (const part of sec.split(/\n(?=### )/).slice(1)) { const [q, ...a] = part.split("\n"); const txt = a.join(" ").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/\s+/g, " ").trim(); if (txt) qs.push({ "@type": "Question", name: q.replace(/^###\s+/, "").trim(), acceptedAnswer: { "@type": "Answer", text: txt } }); }
+  return qs;
+}
+const daysAgo = (d) => Math.floor((Date.parse(today) - Date.parse(d)) / 864e5);
 const postCard = (p) => `<a class="post" href="${p.path}"><b>${esc(p.title)}</b><span>${esc(p.description)}</span><time datetime="${p.date}">${nice(p.date)}</time></a>`;
 
 // ---------- Render ----------
@@ -142,8 +171,9 @@ function render(h, o) {
     if (origin) o.ld = (o.ld || []).concat({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: cr.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c[0], item: origin + c[1] })) });
   }
   let meta = '<script>try{var t=localStorage.getItem("aub-theme");if(t==="light")document.documentElement.dataset.theme="light"}catch(e){}</script><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#05070d"><meta property="og:type" content="' + (o.ogType || "website") + '"><meta property="og:site_name" content="' + esc(S.name) + '"><meta property="og:title" content="' + title + '"><meta property="og:description" content="' + desc + '"><meta name="twitter:card" content="summary_large_image">';
-  if (o.noindex) meta += '<meta name="robots" content="noindex">';
-  else if (origin) meta += '<link rel="canonical" href="' + url + '"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + origin + '/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">';
+  meta += o.noindex ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="max-image-preview:large">';
+  if (o.noindex) { /* no canonical or social tags for noindex pages */ }
+  else if (origin) meta += '<link rel="canonical" href="' + url + '"><meta property="og:url" content="' + url + '"><meta property="og:image" content="' + origin + (o.image || "/og-image.png") + '"' + (o.image ? "" : '><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"') + '>';
   if (toks.length) meta += "<script>window.TOKLIBS=" + JSON.stringify(toks) + ";</script>";
   meta += analyticsHead + adsHead;
   if (origin && !o.noindex) for (const l of o.ld || []) meta += '<script type="application/ld+json">' + jsonSafe(l) + "</script>";
@@ -186,9 +216,10 @@ for (const f of fs.readdirSync("src/pages").filter((f) => f.endsWith(".html"))) 
     .replaceAll("{{PRICE_COUNT}}", () => models.length ? `${models.length} of ${models.length} models` : "")
     .replaceAll("{{PROVIDER_LINKS}}", () => providers.map((x) => `<a href="${U(x.slug)}">${esc(x.name)} API Pricing</a>`).join(" &middot; "));
   if (isHome) ld.push({ "@context": "https://schema.org", "@type": "WebSite", name: S.name, url: origin + "/", description: S.description }, { "@context": "https://schema.org", ...org });
+  else if (name === "about") ld.push({ "@context": "https://schema.org", "@type": "AboutPage", name: "About " + S.name, url: origin + p, publisher: org });
   else if (t) ld.push({ "@context": "https://schema.org", "@type": "WebApplication", name: t.name, url: origin + p, description: t.desc, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", isAccessibleForFree: true, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, publisher: org });
-  const crumbs = isHome || name === "404" ? null : [["Home", "/"], [t ? t.name : (name === "privacy" ? "Privacy Policy" : name === "terms" ? "Terms of Use" : name === "how-it-works" ? "How It Works" : name), p]];
-  const title = !t && name === "privacy" ? `Privacy Policy | ${S.name}` : !t && name === "terms" ? `Terms of Use | ${S.name}` : !t && name === "404" ? `Page Not Found | ${S.name}` : undefined;
+  const crumbs = isHome || name === "404" ? null : [["Home", "/"], [t ? t.name : (name === "privacy" ? "Privacy Policy" : name === "terms" ? "Terms of Use" : name === "how-it-works" ? "How It Works" : name === "about" ? "About" : name), p]];
+  const title = !t && name === "privacy" ? `Privacy Policy | ${S.name}` : !t && name === "terms" ? `Terms of Use | ${S.name}` : !t && name === "404" ? `Page Not Found | ${S.name}` : !t && name === "about" ? `About ${S.name}` : undefined;
   emit(f, render(h, { path: p, crumbs, ld, title, narrow: !t, noindex: name === "404" }), p, name !== "404");
 }
 
@@ -206,10 +237,13 @@ if (posts.length) {
     const tools = p.tools.map((s) => T.find((t) => t.slug === s)).filter(Boolean), more = posts.filter((x) => x.slug !== p.slug).slice(0, 2);
     let h = rd("src/templates/article.html")
       .replaceAll("{{POST_TITLE}}", () => esc(p.title)).replaceAll("{{POST_DATE}}", () => p.date).replaceAll("{{POST_DATE_NICE}}", () => nice(p.date))
+      .replaceAll("{{POST_META2}}", () => p.checked ? `<p class="meta dates">Subscription prices checked <time datetime="${p.checked}">${nice(p.checked)}</time>${p.hasApi && PR ? ` &middot; <span class="apiu">API prices updated <time datetime="${PR.updated}">${nice(PR.updated)}</time></span>` : ""}</p>` : "")
+      .replaceAll("{{POST_STALE}}", () => p.checked && daysAgo(p.checked) > (Number(p.stale) || 30) ? `<div class="stale" role="note"><b>These prices may be out of date.</b> The subscription prices below were last checked on ${nice(p.checked)}. Check the current price on the official page before you subscribe.</div>` : "")
+      .replaceAll("{{POST_HERO}}", () => { if (!p.image) return ""; const [w, h] = imgSize(p.image); return `<figure class="hero-img"><img src="${esc(p.image)}" alt="${esc(p.imageAlt || p.title)}" width="${w}" height="${h}" fetchpriority="high" decoding="async"></figure>`; })
       .replaceAll("{{POST_READ}}", () => Math.max(1, Math.round(p.words / 200))).replaceAll("{{POST_BODY}}", () => p.body)
       .replaceAll("{{POST_TOOLS}}", () => `<div class="tg" style="margin-top:6px">${tools.map(card).join("")}</div>`)
       .replaceAll("{{MORE_POSTS}}", () => more.length ? `<div class="prose" style="padding-top:0"><h2>More Guides</h2><div class="posts">${more.map(postCard).join("")}</div></div>` : "");
-    emit(`blog/${p.slug}.html`, render(h, { path: p.path, title: `${p.title} | ${S.name}`, desc: p.description, ogType: "article", crumbs: [["Home", "/"], ["Blog", POSTDIR], [p.title, p.path]], narrow: true, ld: [{ "@context": "https://schema.org", "@type": "BlogPosting", headline: p.title, description: p.description, datePublished: p.date, dateModified: p.updated || p.date, mainEntityOfPage: origin + p.path, image: origin + "/og-image.png", author: org, publisher: { ...org } }] }), p.path);
+    emit(`blog/${p.slug}.html`, render(h, { path: p.path, title: `${p.title} | ${S.name}`, desc: p.description, ogType: "article", image: p.image, crumbs: [["Home", "/"], ["Blog", POSTDIR], [p.title, p.path]], narrow: true, ld: [{ "@context": "https://schema.org", "@type": "BlogPosting", headline: p.title, description: p.description, datePublished: p.date, dateModified: p.hasApi && PR ? PR.updated : p.checked || p.updated || p.date, mainEntityOfPage: origin + p.path, image: origin + (p.image || "/og-image.png"), author: org, publisher: { ...org } }].concat(p.faq.length ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: p.faq }] : []) }), p.path);
   }
 }
 
@@ -229,7 +263,7 @@ for (const pv of providers) {
 const stateFile = "scripts/lastmod.json";
 let state = {}; try { state = JSON.parse(rd(stateFile)); } catch { /* first run */ }
 const nextState = {};
-for (const [, html, p, inMap] of outputs) { if (!inMap) continue; const h = sha(html.replace(/prices verified[^<]*/gi, "")); const prev = state[p]; nextState[p] = prev && prev.h === h ? prev : { h, d: today }; }
+for (const [, html, p, inMap] of outputs) { if (!inMap) continue; const h = sha(html.replace(/prices verified[^<]*/gi, "").replace(/api prices updated\s*<time[^>]*>[^<]*/gi, "").replace(/"dateModified":"[^"]*"/g, "")); const prev = state[p]; nextState[p] = prev && prev.h === h ? prev : { h, d: today }; }
 wr("robots.txt", "User-agent: *\nAllow: /\n" + (origin ? `\nSitemap: ${origin}/sitemap.xml\n` : ""));
 if (origin) {
   wr("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + outputs.filter((o) => o[3]).map((o) => `<url><loc>${origin}${o[2]}</loc><lastmod>${nextState[o[2]].d}</lastmod></url>`).join("\n") + "\n</urlset>\n");

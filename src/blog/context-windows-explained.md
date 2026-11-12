@@ -2,6 +2,8 @@
 title: Context Windows Explained
 description: What a context window is, what counts toward it, why a bigger window costs more to use, and what happens when you go over.
 date: 2026-11-10
+image: /assets/blog/context-windows-explained-hero.jpg
+imageAlt: A context window filling with tokens
 tools: token-counter, chunker, cost-forecaster
 ---
 A model's **context window** is the maximum number of tokens it can handle in a single request. Think of it as the size of the desk the model works on: everything it needs has to fit on the desk at once.

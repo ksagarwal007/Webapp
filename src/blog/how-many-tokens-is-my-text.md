@@ -2,6 +2,8 @@
 title: How Many Tokens Is My Text?
 description: A plain-English guide to counting tokens: what a token is, the rules of thumb for English and code, and how to get an exact count.
 date: 2026-11-10
+image: /assets/blog/how-many-tokens-is-my-text-hero.jpg
+imageAlt: The phrase "How many tokens is my text?" split into tokens
 tools: token-counter, text-cleaner, cost-forecaster
 ---
 Every AI model reads and writes **tokens**, not words. Providers bill by the token and limit requests by the token, so knowing roughly how many tokens your text uses is the first step to controlling cost and avoiding errors.
