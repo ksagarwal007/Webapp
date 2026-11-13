@@ -20,8 +20,8 @@
   "d": "2026-11-12"
  },
  "/": {
-  "h": "3b7d2687a7b60ef9b69f12d1de21ab12006e3277",
-  "d": "2026-11-12"
+  "h": "d660dbd7acdf677e4ae486aa39c43334efcc09b8",
+  "d": "2026-11-13"
  },
  "/json-validator": {
   "h": "db62f0507cb1817a553ed5b80455311113e3eb9a",
@@ -64,32 +64,36 @@
   "d": "2026-11-12"
  },
  "/blog/": {
-  "h": "3955c3c4bd208f518c7529fe895b47a9862f481a",
-  "d": "2026-11-12"
+  "h": "b8086a90444a2b1667a6bc1999a8961e1963e1da",
+  "d": "2026-11-13"
+ },
+ "/blog/microsoft-outage-llm-app-fallback": {
+  "h": "68c27c85ed5854cb52bc9759e9c4cba5e0fece56",
+  "d": "2026-11-13"
  },
  "/blog/claude-pro-price-india": {
-  "h": "47b6b243a8e4ba02f2e68a876d1267b7931dbcc5",
-  "d": "2026-11-12"
+  "h": "668f40e59e6def71592302d4013f8873737985ad",
+  "d": "2026-11-13"
  },
  "/blog/how-many-tokens-is-my-text": {
-  "h": "8afd1e68bc2353cae3ee0cbe08dde4077fc21120",
-  "d": "2026-11-12"
+  "h": "fd12029d726e82c434c7c740005a5c041645eb06",
+  "d": "2026-11-13"
  },
  "/blog/estimate-monthly-cost-of-an-llm-chatbot": {
-  "h": "541a88b812f0f07291331c675c2d6251fc8cedd8",
-  "d": "2026-11-12"
+  "h": "03b3919cf3b70b84be320929caa8d0fc653dbdb0",
+  "d": "2026-11-13"
  },
  "/blog/cut-your-llm-bill": {
-  "h": "caa49f018a74a08d35c6dac70d9c95267da5c448",
-  "d": "2026-11-12"
+  "h": "5e93fc134a40675d3863c77b90c0011a959f227c",
+  "d": "2026-11-13"
  },
  "/blog/context-windows-explained": {
-  "h": "869b230ab48882eb4d12d3580f5be402c4a556ab",
-  "d": "2026-11-12"
+  "h": "0f2b5799462c8530f352e7315fd96ec604ceb6a3",
+  "d": "2026-11-13"
  },
  "/blog/compare-llm-api-prices": {
-  "h": "892ecd70f4cd025cb356f80650960b9b4a16433c",
-  "d": "2026-11-12"
+  "h": "0f8b1552b27bdac052278c7c467e600edd84caa0",
+  "d": "2026-11-13"
  },
  "/openai-api-pricing": {
   "h": "24b26792f7e171d9b27045e5a024f553a8773c22",
