@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-12",
+ "updated": "2026-11-13",
  "source": "LiteLLM community price list",
- "count": 207,
+ "count": 208,
  "models": [
   {"provider":"Anthropic","name":"claude-fable-5","in":10,"out":50,"ctx":1000,"cr":1},
   {"provider":"Anthropic","name":"claude-fable-5-1","in":10,"out":50,"ctx":1000,"cr":0.25},
@@ -51,6 +51,7 @@
   {"provider":"Google","name":"gemini-3.8-flash","in":0.75,"out":3.75,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-4-argon","in":2,"out":10,"ctx":1049,"cr":0.1},
   {"provider":"Google","name":"gemini-4-carbon","in":2,"out":10,"ctx":1049,"cr":0.1},
+  {"provider":"Google","name":"gemini-4-hydrogen","in":1.5,"out":7.5,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-exp-1206","in":0.3,"out":2.5,"ctx":1049,"cr":0.03},
   {"provider":"Google","name":"gemini-flash-latest","in":0.75,"out":3.75,"ctx":1049,"cr":0.075},
   {"provider":"Google","name":"gemini-flash-lite-latest","in":0.3,"out":2.5,"ctx":1049,"cr":0.03},
